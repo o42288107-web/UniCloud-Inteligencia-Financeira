@@ -1,0 +1,14 @@
+# Allow access to JSON files for the Dashboard
+<Files "*.json">
+    Order Allow,Deny
+    Allow from all
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type"
+</Files>
+
+# Still protect other sensitive files if any
+<Files "*.php">
+    Order Deny,Allow
+    Deny from all
+</Files>

@@ -1,0 +1,681 @@
+[
+    {
+        "id": "recon_69542b6c049bb9.28236907",
+        "tenant_id": "02.272.980\/0001-07",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-12-30",
+            "end_date": "2025-12-30"
+        },
+        "status": "pending",
+        "created_at": "2025-12-30T20:43:40+01:00"
+    },
+    {
+        "id": "recon_69542c2a0b4146.59661779",
+        "tenant_id": "02272980000107",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-12-30",
+            "end_date": "2025-12-30"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T20:46:50+01:00",
+        "started_at": "2025-12-30T20:56:58+01:00",
+        "completed_at": "2025-12-30T20:56:58+01:00",
+        "result": {
+            "count": 0
+        }
+    },
+    {
+        "id": "recon_69542c98c7af94.57201047",
+        "tenant_id": "02272980000107",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-12-30",
+            "end_date": "2025-12-30"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T20:48:40+01:00",
+        "started_at": "2025-12-30T20:56:58+01:00",
+        "completed_at": "2025-12-30T20:56:58+01:00",
+        "result": {
+            "count": 0
+        }
+    },
+    {
+        "id": "recon_69542d2da75e78.63432488",
+        "tenant_id": "02272980000107",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-12-30",
+            "end_date": "2025-12-30"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T20:51:09+01:00",
+        "started_at": "2025-12-30T20:56:58+01:00",
+        "completed_at": "2025-12-30T20:56:58+01:00",
+        "result": {
+            "count": 0
+        }
+    },
+    {
+        "id": "recon_69542e6d389446.63327070",
+        "tenant_id": "02272980000107",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-12-30",
+            "end_date": "2025-12-30"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T20:56:29+01:00",
+        "started_at": "2025-12-30T20:56:58+01:00",
+        "completed_at": "2025-12-30T20:56:58+01:00",
+        "result": {
+            "count": 0
+        }
+    },
+    {
+        "id": "recon_69542ec574a6a7.11198009",
+        "tenant_id": "02272980000107",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-12-30",
+            "end_date": "2025-12-22"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T20:57:57+01:00",
+        "started_at": "2025-12-30T20:58:04+01:00",
+        "completed_at": "2025-12-30T20:58:04+01:00",
+        "result": {
+            "count": 0
+        }
+    },
+    {
+        "id": "recon_69542f51ee4644.63559330",
+        "tenant_id": "02272980000107",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-12-04",
+            "end_date": "2025-12-04"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T21:00:17+01:00",
+        "started_at": "2025-12-30T21:00:24+01:00",
+        "completed_at": "2025-12-30T21:00:25+01:00",
+        "result": {
+            "count": 1060
+        }
+    },
+    {
+        "id": "recon_69542fe4cc0d41.61776874",
+        "tenant_id": "02272980000107",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-12-30",
+            "end_date": "2025-12-30"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T21:02:44+01:00",
+        "started_at": "2025-12-30T21:02:53+01:00",
+        "completed_at": "2025-12-30T21:02:53+01:00",
+        "result": {
+            "count": 0
+        }
+    },
+    {
+        "id": "recon_695430505baaa0.29372051",
+        "tenant_id": "02272980000107",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-12-24",
+            "end_date": "2025-12-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T21:04:32+01:00",
+        "started_at": "2025-12-30T21:04:33+01:00",
+        "completed_at": "2025-12-30T21:04:33+01:00",
+        "result": {
+            "count": 0
+        }
+    },
+    {
+        "id": "recon_695430704d4aa6.34316512",
+        "tenant_id": "02272980000107",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-12-02",
+            "end_date": "2025-12-02"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T21:05:04+01:00",
+        "started_at": "2025-12-30T21:05:13+01:00",
+        "completed_at": "2025-12-30T21:05:13+01:00",
+        "result": {
+            "count": 1097
+        }
+    },
+    {
+        "id": "recon_695431068e4554.76191208",
+        "tenant_id": "02272980000107",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-12-02",
+            "end_date": "2025-12-02"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T21:07:34+01:00",
+        "started_at": "2025-12-30T21:08:49+01:00",
+        "completed_at": "2025-12-30T21:08:50+01:00",
+        "result": {
+            "count": 1097
+        }
+    },
+    {
+        "id": "recon_69543145e22a84.34726465",
+        "tenant_id": "02272980000107",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-12-02",
+            "end_date": "2025-12-02"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T21:08:37+01:00",
+        "started_at": "2025-12-30T21:08:49+01:00",
+        "completed_at": "2025-12-30T21:08:50+01:00",
+        "result": {
+            "count": 1097
+        }
+    },
+    {
+        "id": "recon_6954316bdc0718.34545423",
+        "tenant_id": "02272980000107",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-12-02",
+            "end_date": "2025-12-02"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T21:09:15+01:00",
+        "started_at": "2025-12-30T21:09:19+01:00",
+        "completed_at": "2025-12-30T21:09:19+01:00",
+        "result": {
+            "count": 1097
+        }
+    },
+    {
+        "id": "recon_695431aede5e36.45766272",
+        "tenant_id": "02272980000107",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-12-02",
+            "end_date": "2025-12-02"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T21:10:22+01:00",
+        "started_at": "2025-12-30T21:10:29+01:00",
+        "completed_at": "2025-12-30T21:10:29+01:00",
+        "result": {
+            "count": 1097
+        }
+    },
+    {
+        "id": "recon_6954320b674999.10499216",
+        "tenant_id": "02272980000107",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-12-02",
+            "end_date": "2025-12-02"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T21:11:55+01:00",
+        "started_at": "2025-12-30T21:11:59+01:00",
+        "completed_at": "2025-12-30T21:12:00+01:00",
+        "result": {
+            "count": 1097
+        }
+    },
+    {
+        "id": "recon_69543259dc1307.74715964",
+        "tenant_id": "02272980000107",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-12-02",
+            "end_date": "2025-12-02"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T21:13:13+01:00",
+        "started_at": "2025-12-30T21:13:18+01:00",
+        "completed_at": "2025-12-30T21:13:19+01:00",
+        "result": {
+            "count": 1097
+        }
+    },
+    {
+        "id": "recon_695432c7f381d7.08911072",
+        "tenant_id": "02272980000107",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-12-02",
+            "end_date": "2025-12-02"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T21:15:03+01:00",
+        "started_at": "2025-12-30T21:15:08+01:00",
+        "completed_at": "2025-12-30T21:15:09+01:00",
+        "result": {
+            "count": 1097
+        }
+    },
+    {
+        "id": "recon_6954331678b098.82016491",
+        "tenant_id": "02272980000107",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-12-02",
+            "end_date": "2025-12-02"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T21:16:22+01:00",
+        "started_at": "2025-12-30T21:16:29+01:00",
+        "completed_at": "2025-12-30T21:16:29+01:00",
+        "result": {
+            "count": 1097
+        }
+    },
+    {
+        "id": "recon_69543381342c47.32774197",
+        "tenant_id": "02272980000107",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-12-02",
+            "end_date": "2025-12-02"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T21:18:09+01:00",
+        "started_at": "2025-12-30T21:18:09+01:00",
+        "completed_at": "2025-12-30T21:18:10+01:00",
+        "result": {
+            "count": 1097
+        }
+    },
+    {
+        "id": "recon_695438fb4d8ef7.52720491",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-12-02",
+            "end_date": "2025-12-02"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T21:41:31+01:00",
+        "started_at": "2025-12-30T21:41:37+01:00",
+        "completed_at": "2025-12-30T21:41:37+01:00",
+        "result": {
+            "count": 0
+        }
+    },
+    {
+        "id": "recon_695439132df2e4.66898329",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T21:41:55+01:00",
+        "started_at": "2025-12-30T21:41:57+01:00",
+        "completed_at": "2025-12-30T21:41:57+01:00",
+        "result": {
+            "count": 437
+        }
+    },
+    {
+        "id": "recon_69543a1be03df3.11555150",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T21:46:19+01:00",
+        "started_at": "2025-12-30T21:46:28+01:00",
+        "completed_at": "2025-12-30T21:46:28+01:00",
+        "result": {
+            "count": 437
+        }
+    },
+    {
+        "id": "recon_69543ab492bf45.97906219",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T21:48:52+01:00",
+        "started_at": "2025-12-30T21:49:04+01:00",
+        "completed_at": "2025-12-30T21:49:04+01:00",
+        "result": {
+            "count": 437
+        }
+    },
+    {
+        "id": "recon_69543ae443eac2.45771276",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T21:49:40+01:00",
+        "started_at": "2025-12-30T21:49:44+01:00",
+        "completed_at": "2025-12-30T21:49:44+01:00",
+        "result": {
+            "count": 437
+        }
+    },
+    {
+        "id": "recon_69543b5fdcb7d2.72236067",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T21:51:43+01:00",
+        "started_at": "2025-12-30T21:51:44+01:00",
+        "completed_at": "2025-12-30T21:51:44+01:00",
+        "result": {
+            "count": 437
+        }
+    },
+    {
+        "id": "recon_69543bbc43e933.86204708",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T21:53:16+01:00",
+        "started_at": "2025-12-30T21:53:23+01:00",
+        "completed_at": "2025-12-30T21:53:23+01:00",
+        "result": {
+            "count": 437
+        }
+    },
+    {
+        "id": "recon_69543cbf775335.63438052",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T21:57:35+01:00",
+        "started_at": "2025-12-30T21:57:38+01:00",
+        "completed_at": "2025-12-30T21:57:39+01:00",
+        "result": {
+            "count": 437
+        }
+    },
+    {
+        "id": "recon_69543d79d2df64.86537886",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T22:00:41+01:00",
+        "started_at": "2025-12-30T22:00:47+01:00",
+        "completed_at": "2025-12-30T22:00:47+01:00",
+        "result": {
+            "count": 437
+        }
+    },
+    {
+        "id": "recon_69543ecf66f120.54803842",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T22:06:23+01:00",
+        "started_at": "2025-12-30T22:06:25+01:00",
+        "completed_at": "2025-12-30T22:06:26+01:00",
+        "result": {
+            "count": 437
+        }
+    },
+    {
+        "id": "recon_69543eecec8a44.67413036",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T22:06:52+01:00",
+        "started_at": "2025-12-30T22:06:53+01:00",
+        "completed_at": "2025-12-30T22:06:53+01:00",
+        "result": {
+            "count": 437
+        }
+    },
+    {
+        "id": "recon_6954403f21b306.47630917",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T22:12:31+01:00",
+        "started_at": "2025-12-30T22:12:40+01:00",
+        "completed_at": "2025-12-30T22:12:41+01:00",
+        "result": {
+            "count": 437
+        }
+    },
+    {
+        "id": "recon_695443030b7ef0.68380417",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T22:24:19+01:00",
+        "started_at": "2025-12-30T22:24:28+01:00",
+        "completed_at": "2025-12-30T22:24:29+01:00",
+        "result": {
+            "count": 437
+        }
+    },
+    {
+        "id": "recon_695443ad02bb55.07810087",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T22:27:09+01:00",
+        "started_at": "2025-12-30T22:27:15+01:00",
+        "completed_at": "2025-12-30T22:27:16+01:00",
+        "result": {
+            "count": 437
+        }
+    },
+    {
+        "id": "recon_695446db477ae0.09123417",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T22:40:43+01:00",
+        "started_at": "2025-12-30T22:40:48+01:00",
+        "completed_at": "2025-12-30T22:40:49+01:00",
+        "result": {
+            "count": 446
+        }
+    },
+    {
+        "id": "recon_695446f40140e3.91488565",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T22:41:08+01:00",
+        "started_at": "2025-12-30T22:41:08+01:00",
+        "completed_at": "2025-12-30T22:41:09+01:00",
+        "result": {
+            "count": 446
+        }
+    },
+    {
+        "id": "recon_69544fdb824ce6.50642177",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-30T23:19:07+01:00",
+        "started_at": "2025-12-30T23:19:10+01:00",
+        "completed_at": "2025-12-30T23:19:10+01:00",
+        "result": {
+            "count": 168
+        }
+    },
+    {
+        "id": "recon_69545c12615491.61389530",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-31T00:11:14+01:00",
+        "started_at": "2025-12-31T00:11:20+01:00",
+        "completed_at": "2025-12-31T00:11:20+01:00",
+        "result": {
+            "count": 168
+        }
+    },
+    {
+        "id": "recon_69545df6cc7d33.68857900",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "processing",
+        "created_at": "2025-12-31T00:19:18+01:00",
+        "started_at": "2025-12-31T00:19:22+01:00"
+    },
+    {
+        "id": "recon_69545e6721ea42.69114625",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-31T00:21:11+01:00",
+        "started_at": "2025-12-31T00:21:18+01:00",
+        "completed_at": "2025-12-31T00:21:19+01:00",
+        "result": {
+            "count": 168
+        }
+    },
+    {
+        "id": "recon_69545f96d605d4.25609936",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-31T00:26:14+01:00",
+        "started_at": "2025-12-31T00:26:15+01:00",
+        "completed_at": "2025-12-31T00:26:15+01:00",
+        "result": {
+            "count": 168
+        }
+    },
+    {
+        "id": "recon_695463acc87539.78173598",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-31T00:43:40+01:00",
+        "started_at": "2025-12-31T00:43:44+01:00",
+        "completed_at": "2025-12-31T00:43:44+01:00",
+        "result": {
+            "count": 168
+        }
+    },
+    {
+        "id": "recon_695464ddb119e3.65397226",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-31T00:48:45+01:00",
+        "started_at": "2025-12-31T00:48:59+01:00",
+        "completed_at": "2025-12-31T00:49:00+01:00",
+        "result": {
+            "count": 168
+        }
+    },
+    {
+        "id": "recon_6954659304c881.70663841",
+        "tenant_id": "21992835000145",
+        "type": "reconciliation",
+        "params": {
+            "start_date": "2025-11-25",
+            "end_date": "2025-11-25"
+        },
+        "status": "completed",
+        "created_at": "2025-12-31T00:51:47+01:00",
+        "started_at": "2025-12-31T00:51:50+01:00",
+        "completed_at": "2025-12-31T00:51:50+01:00",
+        "result": {
+            "count": 168
+        }
+    }
+]

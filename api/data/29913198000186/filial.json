@@ -1,0 +1,25 @@
+[
+    {
+        "id": 1,
+        "nome": "MERCADO PLAZZA IV LTDA",
+        "razaosocial": "MERCADO PLAZZA IV LTDA",
+        "codigo": "1",
+        "cnpj": "29.913.198\/0001-86",
+        "endereco": "RUA DOS MOGNOS",
+        "bairro": "JD. VITORIA REGIA",
+        "idcidade": 5302,
+        "cep": "78555-098",
+        "numero": "560",
+        "idestado": 26,
+        "tipoenquadramento": 2,
+        "identidade": 1005,
+        "complemento": "",
+        "cidade": "SINOP",
+        "estado": "MT",
+        "inscricaoestadual": "137175310",
+        "idempresa": 1,
+        "perfilarquivospedfiscal": "A",
+        "indicadoratividadespedfiscal": 1,
+        "inativo": 0
+    }
+]

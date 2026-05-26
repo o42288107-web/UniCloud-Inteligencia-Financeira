@@ -1,0 +1,38 @@
+[
+    {
+        "id": "7837",
+        "email": "",
+        "password": "123456",
+        "name": "ELENICE MAGNAGNAGNO LTDA",
+        "tenant_id": "02.272.980/0001-07",
+        "role": "admin",
+        "cnpj": "02.272.980/0001-07",
+        "company_name": "ELENICE MAGNAGNAGNO LTDA",
+        "users": []
+    },
+    {
+        "id": "4369",
+        "email": "",
+        "password": "791564",
+        "name": "M. H. S. LTDA (MERCADO PEXIN)",
+        "tenant_id": "21.992.835/0001-45",
+        "role": "admin",
+        "cnpj": "21.992.835/0001-45",
+        "company_name": "M. H. S. LTDA (MERCADO PEXIN)",
+        "users": [],
+        "filial_id": 1
+    },
+    {
+        "id": "7008",
+        "email": "",
+        "password": "791564",
+        "name": "MERCADO PLAZZA IV LTDA",
+        "tenant_id": "29.913.198/0001-86",
+        "role": "admin",
+        "cnpj": "29.913.198/0001-86",
+        "company_name": "MERCADO PLAZZA IV LTDA",
+        "users": [],
+        "created_at": "2026-01-06 14:18:58",
+        "filial_id": 1
+    }
+]

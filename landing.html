@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniCloud - Custo Operacional | Dashboard Financeiro Inteligente</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        :root {
+            --primary: #1B96D8;
+            --primary-dark: #0D47A1;
+            --secondary: #6366F1;
+            --accent: #22D3EE;
+            --dark: #0F172A;
+            --darker: #020617;
+            --light: #F8FAFC;
+            --text: #E2E8F0;
+            --text-muted: #94A3B8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        
+        /* 3D Canvas */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(180deg, rgba(2,6,23,0.9) 0%, transparent 100%);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        nav.scrolled {
+            background: rgba(2,6,23,0.95);
+            padding: 1rem 3rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 20px rgba(27,150,216,0.4);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: white;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.75rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 20px rgba(27,150,216,0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(27,150,216,0.6);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        .btn-outline:hover {
+            border-color: var(--primary);
+            background: rgba(27,150,216,0.1);
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 8rem 3rem 4rem;
+            background: transparent;
+        }
+        
+        .hero-content {
+            text-align: center;
+            max-width: 900px;
+            z-index: 10;
+        }
+        
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(99,102,241,0.15);
+            border: 1px solid rgba(99,102,241,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 2rem;
+        }
+        
+        .hero-badge span {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .hero h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #94A3B8 50%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.7;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            justify-content: center;
+            margin-top: 4rem;
+            flex-wrap: wrap;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+        
+        /* Floating Elements */
+        .floating-card {
+            position: absolute;
+            background: rgba(15,23,42,0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .card-dashboard {
+            top: 20%;
+            left: 5%;
+            width: 280px;
+            transform: perspective(1000px) rotateY(15deg);
+        }
+        
+        .card-chart {
+            bottom: 25%;
+            right: 5%;
+            width: 320px;
+            transform: perspective(1000px) rotateY(-15deg);
+        }
+        
+        .card-ai {
+            top: 30%;
+            right: 8%;
+            width: 260px;
+            transform: perspective(1000px) rotateY(-10deg);
+        }
+        
+        .mini-chart {
+            height: 100px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mini-chart::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.05) 10px,
+                rgba(255,255,255,0.05) 20px
+            );
+        }
+        
+        /* Sections */
+        section {
+            padding: 8rem 3rem;
+            position: relative;
+            z-index: 10;
+            background: linear-gradient(180deg, rgba(2,6,23,0.97) 0%, rgba(15,23,42,0.95) 100%);
+            min-height: 100vh;
+        }
+        
+        section:first-of-type {
+            background: transparent;
+            min-height: auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 4rem;
+        }
+        
+        .section-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(27,150,216,0.2), rgba(99,102,241,0.2));
+            border: 1px solid rgba(27,150,216,0.3);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+        
+        .section-header h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+        
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 2rem;
+        }
+        
+        .feature-card {
+            background: rgba(15,23,42,0.6);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+        
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(27,150,216,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px rgba(27,150,216,0.3);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        .feature-card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        
+        /* Dashboard Preview */
+        .dashboard-preview {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .dashboard-mockup {
+            background: rgba(15,23,42,0.9);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+        }
+        
+        .mockup-header {
+            background: rgba(30,41,59,0.8);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .mockup-dots {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .mockup-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .mockup-dot:nth-child(1) { background: #FF5F56; }
+        .mockup-dot:nth-child(2) { background: #FFBD2E; }
+        .mockup-dot:nth-child(3) { background: #27CA40; }
+        
+        .mockup-title {
+            flex: 1;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .mockup-content {
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+        
+        .kpi-card {
+            background: rgba(30,41,59,0.5);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .kpi-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+        
+        .kpi-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .kpi-change {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+        
+        .kpi-change.positive { color: #27CA40; }
+        .kpi-change.negative { color: #FF5F56; }
+        
+        .chart-area {
+            grid-column: span 2;
+            background: rgba(30,41,59,0.5);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.05);
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 1rem;
+            height: 150px;
+            padding: 1rem;
+        }
+        
+        .chart-bar {
+            width: 40px;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            border-radius: 0.5rem 0.5rem 0 0;
+            position: relative;
+            transition: height 0.5s ease;
+        }
+        
+        .chart-bar::before {
+            content: attr(data-label);
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        
+        /* AI Section */
+        .ai-section {
+            background: linear-gradient(180deg, rgba(15,23,42,0.95) 0%, rgba(30,41,59,0.9) 50%, rgba(15,23,42,0.95) 100%);
+        }
+        
+        .ai-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .ai-chat-preview {
+            background: rgba(15,23,42,0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 1.5rem;
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .ai-avatar {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .ai-info h3 {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .ai-info p {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+        
+        .chat-messages {
+            padding: 2rem;
+            min-height: 300px;
+        }
+        
+        .message {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .message.user {
+            flex-direction: row-reverse;
+        }
+        
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        
+        .message.bot .message-avatar {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+        }
+        
+        .message.user .message-avatar {
+            background: rgba(99,102,241,0.3);
+        }
+        
+        .message-bubble {
+            max-width: 70%;
+            padding: 1rem 1.25rem;
+            border-radius: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .message.bot .message-bubble {
+            background: rgba(30,41,59,0.8);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 1rem 1rem 1rem 0;
+        }
+        
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 1rem 1rem 0 1rem;
+        }
+        
+        /* Pricing */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding-top: 2rem;
+        }
+        
+        .pricing-card {
+            background: rgba(15,23,42,0.6);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.4s ease;
+        }
+        
+        .pricing-card.featured {
+            border-color: var(--primary);
+            box-shadow: 0 0 40px rgba(27,150,216,0.2);
+        }
+        
+        .pricing-card.featured::before {
+            content: 'Mais Popular';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .pricing-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .pricing-price {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+        
+        .pricing-price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+        
+        .pricing-features {
+            list-style: none;
+            margin: 2rem 0;
+            text-align: left;
+        }
+        
+        .pricing-features li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+        }
+        
+        .pricing-features li::before {
+            content: '✓';
+            color: var(--accent);
+            font-weight: 700;
+        }
+        
+        .pricing-card .btn {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        /* Testimonials */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding-top: 2rem;
+        }
+        
+        .testimonial-card {
+            background: rgba(15,23,42,0.6);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 1.5rem;
+            padding: 2rem;
+        }
+        
+        .testimonial-stars {
+            color: #FFD700;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .testimonial-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            color: var(--text);
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .author-info h4 {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .author-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            background: linear-gradient(135deg, rgba(27,150,216,0.2), rgba(99,102,241,0.2));
+            border: 1px solid rgba(27,150,216,0.4);
+            border-radius: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 5rem 3rem;
+        }
+        
+        .cta-section h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 1rem;
+        }
+        
+        .cta-section p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 4rem 3rem 2rem;
+            background: rgba(2,6,23,0.98);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr repeat(3, 1fr);
+            gap: 3rem;
+        }
+        
+        .footer-brand {
+            max-width: 300px;
+        }
+        
+        .footer-brand .logo {
+            margin-bottom: 1rem;
+        }
+        
+        .footer-brand p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .footer-links h4 {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        
+        .footer-links a {
+            display: block;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.4rem 0;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 3rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        
+        /* Mobile Menu */
+        .mobile-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .mobile-toggle span {
+            width: 25px;
+            height: 2px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+        
+        /* Animations */
+        .fade-in {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .fade-in.animated {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 1.5rem;
+            }
+            
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(2,6,23,0.98);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1.5rem;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .mobile-toggle {
+                display: flex;
+            }
+            
+            section {
+                padding: 4rem 1.5rem;
+            }
+            
+            .hero {
+                padding: 6rem 1.5rem 3rem;
+            }
+            
+            .hero-stats {
+                gap: 2rem;
+            }
+            
+            .floating-card {
+                display: none;
+            }
+            
+            .mockup-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-area {
+                grid-column: span 1;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+        
+        /* Particle effect */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 15s infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 3D Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
+    
+    <!-- Particles -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="#" class="logo">
+            <div class="logo-icon">💹</div>
+            UniCloud
+        </a>
+        <div class="nav-links" id="navLinks">
+            <a href="#features">Recursos</a>
+            <a href="#demo">Demo</a>
+            <a href="#ai">Inteligência Artificial</a>
+            <a href="#pricing">Preços</a>
+            <a href="#contact" class="btn btn-primary">Começar Agora</a>
+        </div>
+        <div class="mobile-toggle" id="mobileToggle" onclick="toggleMobileMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="floating-card card-dashboard" id="cardDashboard">
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Faturamento Mensal</div>
+            <div style="font-family: 'Space Grotesk'; font-size: 1.8rem; font-weight: 700; color: var(--accent);">R$ 847.320</div>
+            <div class="mini-chart"></div>
+        </div>
+        
+        <div class="floating-card card-chart" id="cardChart">
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Despesas Operacionais</div>
+            <div style="display: flex; gap: 1rem; margin-bottom: 0.5rem;">
+                <span style="font-family: 'Space Grotesk'; font-size: 1.4rem; font-weight: 700;">R$ 312.580</span>
+                <span style="color: #FF5F56; font-size: 0.85rem;">↑ 8.2%</span>
+            </div>
+            <div style="display: flex; align-items: flex-end; gap: 6px; height: 60px;">
+                <div style="width: 20px; height: 40%; background: linear-gradient(180deg, var(--primary), var(--secondary)); border-radius: 4px 4px 0 0;"></div>
+                <div style="width: 20px; height: 60%; background: linear-gradient(180deg, var(--primary), var(--secondary)); border-radius: 4px 4px 0 0;"></div>
+                <div style="width: 20px; height: 45%; background: linear-gradient(180deg, var(--primary), var(--secondary)); border-radius: 4px 4px 0 0;"></div>
+                <div style="width: 20px; height: 80%; background: linear-gradient(180deg, var(--primary), var(--secondary)); border-radius: 4px 4px 0 0;"></div>
+                <div style="width: 20px; height: 70%; background: linear-gradient(180deg, var(--primary), var(--secondary)); border-radius: 4px 4px 0 0;"></div>
+                <div style="width: 20px; height: 55%; background: linear-gradient(180deg, var(--primary), var(--secondary)); border-radius: 4px 4px 0 0;"></div>
+            </div>
+        </div>
+        
+        <div class="floating-card card-ai" id="cardAI">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                <div style="width: 32px; height: 32px; background: linear-gradient(135deg, var(--secondary), var(--primary)); border-radius: 50%; display: flex; align-items: center; justify-content: center;">🤖</div>
+                <span style="font-weight: 600;">IA Analista</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">"Despesas com energia aumentaram 23% este mês..."</p>
+        </div>
+        
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span>●</span> Nova versão 2.2 com IA avançada
+            </div>
+            <h1>Decisões Financeiras<br>Inteligentes em Tempo Real</h1>
+            <p>Dashboard completo para análise de despesas operacionais versus faturamento. 
+               Identifique tendências, receba insights da IA e tome decisões estratégicas com confiança.</p>
+            <div class="hero-buttons">
+                <a href="#pricing" class="btn btn-primary">
+                    <span>🚀</span> Experimentar Grátis
+                </a>
+                <a href="#demo" class="btn btn-outline">
+                    <span>▶</span> Ver Demo
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-value">500+</div>
+                    <div class="stat-label">Empresas Atendidas</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">R$ 2.5B</div>
+                    <div class="stat-label">Dados Processados</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">99.9%</div>
+                    <div class="stat-label">Uptime</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section id="features">
+        <div class="section-header fade-in">
+            <span class="section-tag">Recursos</span>
+            <h2>Tudo que você precisa para controlar seus custos</h2>
+            <p>Uma solução completa que combina poder analítico com inteligência artificial para transformar dados em decisões.</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card fade-in">
+                <div class="feature-icon">📊</div>
+                <h3>Dashboard Interativo</h3>
+                <p>Visualize KPIs essenciais em tempo real com gráficos dinâmicos e indicadores de performance. Filtros avançados por período, filial e categoria.</p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">🤖</div>
+                <h3>IA Analista Financeiro</h3>
+                <p>Nosso assistente virtual analisa seus dados, identifica padrões e fornece insights personalizados para reduzir custos e aumentar lucratividade.</p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">🔄</div>
+                <h3>Sincronização Automática</h3>
+                <p>Conecte-se diretamente ao seu banco de dados PostgreSQL. Sincronização em tempo real ou agendada, sem intervenção manual.</p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">📱</div>
+                <h3>Desktop App</h3>
+                <p>Aplicativo Electron nativo para Windows com interface moderna. Funciona offline e se minimiza para a bandeja do sistema.</p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">🔒</div>
+                <h3>Segurança Total</h3>
+                <p>Conexões criptografadas, múltiplos perfis de banco de dados e mapeamento personalizado de schema. Seus dados sempre protegidos.</p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">📈</div>
+                <h3>Relatórios Detalhados</h3>
+                <p>Evolução mensal, top 10 despesas, detalhamento por conta e histórico completo de lançamentos com exportação de dados.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Dashboard Demo Section -->
+    <section id="demo">
+        <div class="section-header fade-in">
+            <span class="section-tag">Demo</span>
+            <h2>Interface intuitiva e poderosa</h2>
+            <p>Veja como é fácil monitorar sua operação financeira com nosso dashboard.</p>
+        </div>
+        
+        <div class="dashboard-preview fade-in">
+            <div class="dashboard-mockup">
+                <div class="mockup-header">
+                    <div class="mockup-dots">
+                        <div class="mockup-dot"></div>
+                        <div class="mockup-dot"></div>
+                        <div class="mockup-dot"></div>
+                    </div>
+                    <div class="mockup-title">UniCloud - Custo Operacional v2.2</div>
+                </div>
+                <div class="mockup-content">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Faturamento Total</div>
+                        <div class="kpi-value" style="color: var(--accent);">R$ 847.320</div>
+                        <div class="kpi-change positive">↑ 12.5% vs mês anterior</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Despesas Operacionais</div>
+                        <div class="kpi-value" style="color: #FF5F56;">R$ 312.580</div>
+                        <div class="kpi-change negative">↑ 8.2% vs mês anterior</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">% Despesa/Faturamento</div>
+                        <div class="kpi-value" style="color: var(--primary);">36.9%</div>
+                        <div class="kpi-change positive">↓ 1.2pp melhor que meta</div>
+                    </div>
+                    <div class="chart-area">
+                        <div class="chart-bars">
+                            <div class="chart-bar" style="height: 60%;" data-label="Jan"></div>
+                            <div class="chart-bar" style="height: 75%;" data-label="Fev"></div>
+                            <div class="chart-bar" style="height: 65%;" data-label="Mar"></div>
+                            <div class="chart-bar" style="height: 85%;" data-label="Abr"></div>
+                            <div class="chart-bar" style="height: 70%;" data-label="Mai"></div>
+                            <div class="chart-bar" style="height: 90%;" data-label="Jun"></div>
+                            <div class="chart-bar" style="height: 80%;" data-label="Jul"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- AI Section -->
+    <section id="ai" class="ai-section">
+        <div class="section-header fade-in">
+            <span class="section-tag">Inteligência Artificial</span>
+            <h2>Seu Analista Financeiro Virtual 24/7</h2>
+            <p>Insights inteligentes gerados por IA que transformam números em estratégias de negócio.</p>
+        </div>
+        
+        <div class="ai-container fade-in">
+            <div class="ai-chat-preview">
+                <div class="chat-header">
+                    <div class="ai-avatar">🤖</div>
+                    <div class="ai-info">
+                        <h3>IA Analista Financeiro</h3>
+                        <p>Online • Processando seus dados</p>
+                    </div>
+                </div>
+                <div class="chat-messages">
+                    <div class="message bot">
+                        <div class="message-avatar">🤖</div>
+                        <div class="message-bubble">
+                            Olá! Sou seu analista financeiro virtual. Posso ajudar você a entender seus custos operacionais, identificar oportunidades de economia e fornecer insights estratégicos baseados nos seus dados. O que gostaria de analisar hoje?
+                        </div>
+                    </div>
+                    <div class="message user">
+                        <div class="message-avatar">👤</div>
+                        <div class="message-bubble">
+                            Quais são as principais causas do aumento de despesas este mês?
+                        </div>
+                    </div>
+                    <div class="message bot">
+                        <div class="message-avatar">🤖</div>
+                        <div class="message-bubble">
+                            Analisando seus dados de despesas... Encontrei 3 fatores principais:<br><br>
+                            <strong>1. Energia Elétrica</strong> (+R$ 18.500 / +23%)<br>
+                            Aumento no consumo可能是设备老化或电价调整<br><br>
+                            <strong>2. Transporte</strong> (+R$ 12.200 / +15%)<br>
+                            Aumento nos custos de logística de entrega<br><br>
+                            <strong>3. Marketing</strong> (+R$ 8.000 / +12%)<br>
+                            Campanha sazonal de Black Friday<br><br>
+                            <em>💡 Recomendação: Negociar contrato de energia com fornecedor alternativo pode gerar economia de R$ 15.000/mês.</em>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Pricing Section -->
+    <section id="pricing">
+        <div class="section-header fade-in">
+            <span class="section-tag">Preços</span>
+            <h2>Planos que crescem com seu negócio</h2>
+            <p>Escolha o plano ideal para sua empresa. Comece grátis e escale conforme necessário.</p>
+        </div>
+        
+        <div class="pricing-grid">
+            <div class="pricing-card fade-in">
+                <div class="pricing-name">Starter</div>
+                <div class="pricing-price">R$ 199 <span>/mês</span></div>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Para pequenas empresas</p>
+                <ul class="pricing-features">
+                    <li>1 conexão de banco de dados</li>
+                    <li>Dashboard básico</li>
+                    <li>Até 5 usuários</li>
+                    <li>Relatórios mensais</li>
+                    <li>Suporte por email</li>
+                </ul>
+                <a href="#contact" class="btn btn-outline">Começar Grátis</a>
+            </div>
+            
+            <div class="pricing-card featured fade-in">
+                <div class="pricing-name">Profissional</div>
+                <div class="pricing-price">R$ 499 <span>/mês</span></div>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Para médias empresas</p>
+                <ul class="pricing-features">
+                    <li>5 conexões de banco de dados</li>
+                    <li>Dashboard completo + IA</li>
+                    <li>Até 20 usuários</li>
+                    <li>Relatórios avançados</li>
+                    <li>Alertas em tempo real</li>
+                    <li>Suporte prioritário</li>
+                </ul>
+                <a href="#contact" class="btn btn-primary">Assinar Agora</a>
+            </div>
+            
+            <div class="pricing-card fade-in">
+                <div class="pricing-name">Enterprise</div>
+                <div class="pricing-price">R$ 1.299 <span>/mês</span></div>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Para grandes empresas</p>
+                <ul class="pricing-features">
+                    <li>Conexões ilimitadas</li>
+                    <li>Todas funcionalidades + API</li>
+                    <li>Usuários ilimitados</li>
+                    <li>Customização completa</li>
+                    <li>SLA garantido 99.9%</li>
+                    <li>Suporte 24/7 dedicado</li>
+                </ul>
+                <a href="#contact" class="btn btn-outline">Falar com Vendas</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials Section -->
+    <section id="testimonials">
+        <div class="section-header fade-in">
+            <span class="section-tag">Depoimentos</span>
+            <h2>O que nossos clientes dizem</h2>
+            <p>Empresas que já transformaram sua gestão financeira com o UniCloud.</p>
+        </div>
+        
+        <div class="testimonials-grid">
+            <div class="testimonial-card fade-in">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">"Reduzimos nossos custos operacionais em 18% no primeiro trimestre. A IA identificou oportunidades de economia que nunca tínhamos percebido."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">RM</div>
+                    <div class="author-info">
+                        <h4>Roberto Mendes</h4>
+                        <p>Diretor Financeiro, TechSolutions Ltda</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-card fade-in">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">"A interface é incrível e os relatórios são muito mais claros que nosso sistema anterior. A equipe aprovou em 2 dias de uso."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">AC</div>
+                    <div class="author-info">
+                        <h4>Ana Carolina Silva</h4>
+                        <p>Controller, Grupo Essenza</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-card fade-in">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">"Finalmente consigo ver em tempo real onde cada centavo está indo. O sync com nosso PostgreSQL é perfeito."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">PF</div>
+                    <div class="author-info">
+                        <h4>Paulo Ferreira</h4>
+                        <p>CEO, LogiExpress Brasil</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section id="contact">
+        <div class="cta-section fade-in" style="padding: 5rem 3rem;">
+            <span class="section-tag">Comece Agora</span>
+            <h2>Pronto para dominar seus custos?</h2>
+            <p>Junte-se a mais de 500 empresas que já transformaram sua gestão financeira.<br>
+            Comece seu teste gratuito de 14 dias, sem compromisso.</p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
+                <a href="#" class="btn btn-primary" style="padding: 1rem 2.5rem; font-size: 1.1rem;">
+                    <span>🚀</span> Iniciar Teste Grátis
+                </a>
+                <a href="mailto:vendas@unicloud.com.br" class="btn btn-outline" style="padding: 1rem 2.5rem; font-size: 1.1rem;">
+                    <span>💬</span> Falar com Vendas
+                </a>
+            </div>
+            <p style="margin-top: 2rem; font-size: 0.85rem; color: var(--text-muted);">
+                Sem cartão de crédito • Setup em 5 minutos • Suporte incluso
+            </p>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="#" class="logo">
+                    <div class="logo-icon">💹</div>
+                    UniCloud
+                </a>
+                <p>Transformando dados financeiros em decisões estratégicas. A solução mais completa para gestão de custos operacionais.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Produto</h4>
+                <a href="#features">Recursos</a>
+                <a href="#pricing">Preços</a>
+                <a href="#demo">Demo</a>
+                <a href="#">Updates</a>
+            </div>
+            <div class="footer-links">
+                <h4>Empresa</h4>
+                <a href="#">Sobre nós</a>
+                <a href="#">Blog</a>
+                <a href="#">Carreiras</a>
+                <a href="#">Parceiros</a>
+            </div>
+            <div class="footer-links">
+                <h4>Suporte</h4>
+                <a href="#">Central de Ajuda</a>
+                <a href="#">Documentação</a>
+                <a href="#">API</a>
+                <a href="#">Contato</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 UniCloud. Todos os direitos reservados. | CNPJ: 00.000.000/0001-00</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Three.js 3D Background
+        const canvas = document.getElementById('bg-canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        
+        // Create floating geometric shapes
+        const geometries = [];
+        const materials = [
+            new THREE.MeshPhongMaterial({ color: 0x1B96D8, transparent: true, opacity: 0.3, wireframe: true }),
+            new THREE.MeshPhongMaterial({ color: 0x6366F1, transparent: true, opacity: 0.2, wireframe: true }),
+            new THREE.MeshPhongMaterial({ color: 0x22D3EE, transparent: true, opacity: 0.25, wireframe: true })
+        ];
+        
+        // Torus
+        const torusGeometry = new THREE.TorusGeometry(3, 0.8, 16, 100);
+        const torus = new THREE.Mesh(torusGeometry, materials[0]);
+        torus.position.set(-8, 2, -15);
+        scene.add(torus);
+        geometries.push({ mesh: torus, rotSpeed: { x: 0.002, y: 0.003, z: 0.001 } });
+        
+        // Icosahedron
+        const icoGeometry = new THREE.IcosahedronGeometry(2.5, 0);
+        const ico = new THREE.Mesh(icoGeometry, materials[1]);
+        ico.position.set(10, -3, -12);
+        scene.add(ico);
+        geometries.push({ mesh: ico, rotSpeed: { x: 0.003, y: 0.002, z: 0.001 } });
+        
+        // Octahedron
+        const octGeometry = new THREE.OctahedronGeometry(2, 0);
+        const oct = new THREE.Mesh(octGeometry, materials[2]);
+        oct.position.set(5, 5, -18);
+        scene.add(oct);
+        geometries.push({ mesh: oct, rotSpeed: { x: 0.001, y: 0.004, z: 0.002 } });
+        
+        // Torus Knot
+        const knotGeometry = new THREE.TorusKnotGeometry(2, 0.5, 100, 16);
+        const knot = new THREE.Mesh(knotGeometry, materials[0]);
+        knot.position.set(-12, -5, -20);
+        scene.add(knot);
+        geometries.push({ mesh: knot, rotSpeed: { x: 0.002, y: 0.001, z: 0.003 } });
+        
+        // Dodecahedron
+        const dodecGeometry = new THREE.DodecahedronGeometry(1.8, 0);
+        const dodec = new THREE.Mesh(dodecGeometry, materials[1]);
+        dodec.position.set(12, 4, -16);
+        scene.add(dodec);
+        geometries.push({ mesh: dodec, rotSpeed: { x: 0.003, y: 0.002, z: 0.001 } });
+        
+        // Particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 2000;
+        const posArray = new Float32Array(particlesCount * 3);
+        
+        for (let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 100;
+        }
+        
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.02,
+            color: 0x1B96D8,
+            transparent: true,
+            opacity: 0.6
+        });
+        
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+        
+        // Lights
+        const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+        scene.add(ambientLight);
+        
+        const pointLight1 = new THREE.PointLight(0x1B96D8, 1, 50);
+        pointLight1.position.set(10, 10, 10);
+        scene.add(pointLight1);
+        
+        const pointLight2 = new THREE.PointLight(0x6366F1, 1, 50);
+        pointLight2.position.set(-10, -10, 10);
+        scene.add(pointLight2);
+        
+        camera.position.z = 20;
+        
+        // Mouse movement
+        let mouseX = 0;
+        let mouseY = 0;
+        
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            mouseY = (e.clientY / window.innerHeight) * 2 - 1;
+        });
+        
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Rotate geometries
+            geometries.forEach(g => {
+                g.mesh.rotation.x += g.rotSpeed.x;
+                g.mesh.rotation.y += g.rotSpeed.y;
+                g.mesh.rotation.z += g.rotSpeed.z;
+            });
+            
+            // Rotate particles
+            particlesMesh.rotation.y += 0.0005;
+            
+            // Camera movement based on mouse
+            camera.position.x += (mouseX * 3 - camera.position.x) * 0.02;
+            camera.position.y += (-mouseY * 3 - camera.position.y) * 0.02;
+            camera.lookAt(scene.position);
+            
+            renderer.render(scene, camera);
+        }
+        
+        animate();
+        
+        // Handle resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        // Create particles in DOM
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+        
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+        
+        // Fade in elements on scroll
+        const fadeElements = document.querySelectorAll('.fade-in');
+        fadeElements.forEach((el, i) => {
+            el.classList.add('animated');
+            gsap.to(el, {
+                scrollTrigger: {
+                    trigger: el,
+                    start: 'top 85%',
+                    toggleActions: 'play none none none'
+                },
+                y: 0,
+                opacity: 1,
+                duration: 0.8,
+                delay: i % 3 * 0.1,
+                ease: 'power3.out'
+            });
+        });
+        
+        // Hero animations
+        gsap.from('.hero-badge', { opacity: 0, y: 30, duration: 1, delay: 0.5 });
+        gsap.from('.hero h1', { opacity: 0, y: 50, duration: 1, delay: 0.7 });
+        gsap.from('.hero p', { opacity: 0, y: 30, duration: 1, delay: 0.9 });
+        gsap.from('.hero-buttons', { opacity: 0, y: 30, duration: 1, delay: 1.1 });
+        gsap.from('.hero-stats', { opacity: 0, y: 30, duration: 1, delay: 1.3 });
+        
+        // Floating cards animation
+        gsap.to('#cardDashboard', {
+            y: -20,
+            duration: 3,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut'
+        });
+        
+        gsap.to('#cardChart', {
+            y: 20,
+            duration: 2.5,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut'
+        });
+        
+        gsap.to('#cardAI', {
+            y: -15,
+            duration: 3.5,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut'
+        });
+        
+        // Chart bars animation
+        const chartBars = document.querySelectorAll('.chart-bar');
+        gsap.from(chartBars, {
+            scaleY: 0,
+            duration: 1,
+            delay: 1.5,
+            stagger: 0.1,
+            transformOrigin: 'bottom',
+            ease: 'bounce.out'
+        });
+        
+        // Mini chart animation
+        gsap.to('.mini-chart', {
+            backgroundPosition: '200% 0',
+            duration: 3,
+            repeat: -1,
+            ease: 'linear'
+        });
+        
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // Close mobile menu if open
+                    document.getElementById('navLinks').classList.remove('active');
+                }
+            });
+        });
+        
+        // Parallax effect on scroll
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero-content');
+            if (hero && scrolled < window.innerHeight) {
+                hero.style.transform = `translateY(${scrolled * 0.3}px)`;
+                hero.style.opacity = 1 - (scrolled / window.innerHeight);
+            }
+        });
+        
+        // Interactive hover effect on feature cards
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+            });
+        });
+        
+        // Pricing card hover effect
+        document.querySelectorAll('.pricing-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                gsap.to(card, { scale: 1.02, duration: 0.3 });
+            });
+            card.addEventListener('mouseleave', () => {
+                gsap.to(card, { scale: 1, duration: 0.3 });
+            });
+        });
+        
+        // Counter animation for stats
+        function animateCounter(element, target, suffix = '') {
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current) + suffix;
+            }, 30);
+        }
+        
+        // Intersection Observer for counter animation
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const statValues = entry.target.querySelectorAll('.stat-value');
+                    statValues.forEach(stat => {
+                        const text = stat.textContent;
+                        if (text.includes('+')) {
+                            stat.textContent = '0+';
+                        } else if (text.includes('B')) {
+                            animateCounter(stat, 2.5, 'B');
+                        } else if (text.includes('%')) {
+                            animateCounter(stat, 99.9, '%');
+                        }
+                    });
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        const heroStats = document.querySelector('.hero-stats');
+        if (heroStats) statsObserver.observe(heroStats);
+        
+        console.log('🚀 UniCloud Landing Page loaded successfully!');
+    </script>
+</body>
+</html>

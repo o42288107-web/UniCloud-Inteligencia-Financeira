@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Despesas x Faturamento</title>
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind & Config -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1B96D8",
+                        "primary-container": "#E3F2FD",
+                        "on-primary-container": "#0D47A1",
+                        "surface": "rgba(255, 255, 255, 0.6)",
+                        "sidebar": "rgba(241, 245, 249, 0.7)",
+                        "on-surface": "#1E293B",
+                        "on-surface-variant": "#64748B",
+                        "outline-variant": "rgba(226, 232, 240, 0.5)",
+                    },
+                    fontFamily: {
+                        "sans": ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "9999px",
+                        "lg": "1.5rem",
+                        "xl": "2rem",
+                        "2xl": "2.5rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        'liquid': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 20px 25px -5px rgba(0, 0, 0, 0.05)',
+                        'glass-inner': 'inset 0 1px 1px 0 rgba(255, 255, 255, 0.5)',
+                    }
+                },
+            },
+        }
+    </script>
+
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .liquid-glass {
+            backdrop-filter: blur(25px);
+            background: rgba(255, 255, 255, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .glass-panel {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .sidebar-glass {
+            backdrop-filter: blur(30px);
+            background: rgba(248, 250, 252, 0.7);
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .bubble-glass-ai {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.04);
+        }
+
+        .bubble-glass-user {
+            backdrop-filter: blur(20px);
+            background: rgba(248, 250, 252, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.03);
+        }
+
+        .bg-gradient-mesh {
+            background:
+                radial-gradient(at 0% 0%, rgba(27, 150, 216, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(27, 150, 216, 0.05) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(59, 130, 246, 0.05) 0px, transparent 50%);
+            background-color: #ffffff;
+        }
+
+        /* Essential App Overrides */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="ai_styles.css">
+</head>
+
+<body class="bg-gradient-mesh font-sans text-on-surface antialiased">
+    <div class="app-container h-screen flex flex-col overflow-hidden">
+        <!-- Tab Bar (Original Persistent Navbar) -->
+        <div class="tab-bar glass shrink-0 z-50" id="tabBar">
+            <div class="tab active" data-tab="dashboard" onclick="switchTab('dashboard', { source: 'tab-click' })">
+                <span class="tab-title">Visão Geral</span>
+            </div>
+            <div class="tab" data-tab="stock-intelligence"
+                onclick="switchTab('stock-intelligence', { source: 'tab-click' })">
+                <span class="tab-title">Estoque Inteligente</span>
+            </div>
+            <div class="tab" data-tab="ai" onclick="switchTab('ai', { source: 'tab-click' })">
+                <span class="tab-title">IA - Analista Financeiro</span>
+            </div>
+            <div class="tab" data-tab="settings" onclick="switchTab('settings', { source: 'tab-click' })"
+                style="display: none;">
+                <span class="tab-title">Configuração de Banco</span>
+            </div>
+        </div>
+
+        <!-- Tab Contents -->
+        <div id="tabContents" class="flex-1 overflow-hidden relative">
+
+            <!-- Database Settings Tab -->
+            <div id="tab-settings" class="tab-content absolute inset-0 overflow-y-auto bg-surface">
+                <div class="max-w-screen-2xl mx-auto p-8 pt-12">
+                    <!-- Header Section -->
+                    <header class="mb-10">
+                        <h1 class="text-4xl font-extrabold tracking-tight text-on-surface mb-2">Configuração de Banco
+                        </h1>
+                        <p class="text-on-surface-variant text-lg max-w-2xl">Gerencie conexões, perfis de acesso e
+                            mapeamento de dados para o motor de inteligência financeira.</p>
+                        <div id="dbStatus"
+                            class="mt-4 px-4 py-2 bg-primary/10 text-primary text-sm font-semibold rounded-lg w-fit">
+                            Aguardando ação.</div>
+                    </header>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        <!-- Left Column: Profiles & Active Connection -->
+                        <div class="lg:col-span-5 space-y-8">
+                            <!-- Perfis List -->
+                            <section class="bg-surface-container-low p-6 rounded-DEFAULT transition-all">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h2 class="text-xl font-bold text-on-surface">Perfis</h2>
+                                    <div class="flex gap-2">
+                                        <button id="dbBtnRefresh"
+                                            class="p-2.5 bg-white/50 text-on-surface-variant rounded-full hover:text-primary transition-all border border-outline-variant/30">
+                                            <span class="material-symbols-outlined text-[20px]">refresh</span>
+                                        </button>
+                                        <button id="dbBtnNew"
+                                            class="flex items-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-full text-sm font-semibold hover:shadow-lg hover:shadow-primary/20 transition-all">
+                                            <span class="material-symbols-outlined text-sm">add</span>
+                                            Novo Perfil
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="dbProfileList" class="space-y-3">
+                                    <div class="db-profile-empty text-center py-10 text-on-surface-variant/60 text-sm">
+                                        Nenhum perfil carregado.</div>
+                                </div>
+                            </section>
+
+                            <!-- Conexão Ativa Form -->
+                            <section
+                                class="bg-surface-container-lowest p-8 rounded-DEFAULT shadow-sm border border-outline-variant/10">
+                                <h2 class="text-xl font-bold text-on-surface mb-6 flex items-center gap-2">
+                                    <span class="material-symbols-outlined">settings_input_component</span>
+                                    Conexão Ativa
+                                </h2>
+                                <form class="space-y-5" onsubmit="return false;">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label
+                                                class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1.5 ml-1">Perfil</label>
+                                            <select id="dbConnectionSelect"
+                                                class="w-full bg-surface-container-low border-none rounded-DEFAULT px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary/20 transition-all">
+                                                <option value="">Nova conexão</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1.5 ml-1">Tipo
+                                                de Banco</label>
+                                            <select id="dbType"
+                                                class="w-full bg-surface-container-low border-none rounded-DEFAULT px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary/20 transition-all">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1.5 ml-1">Nome
+                                            da Conexão</label>
+                                        <input id="dbName"
+                                            class="w-full bg-surface-container-low border-none rounded-DEFAULT px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary/20 transition-all"
+                                            type="text" placeholder="Ex: Produção" />
+                                    </div>
+                                    <div class="grid grid-cols-4 gap-4">
+                                        <div class="col-span-3">
+                                            <label
+                                                class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1.5 ml-1">Host
+                                                / Endpoint</label>
+                                            <input id="dbHost"
+                                                class="w-full bg-surface-container-low border-none rounded-DEFAULT px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary/20 transition-all"
+                                                type="text" placeholder="localhost" />
+                                        </div>
+                                        <div class="col-span-1">
+                                            <label
+                                                class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1.5 ml-1">Porta</label>
+                                            <input id="dbPort"
+                                                class="w-full bg-surface-container-low border-none rounded-DEFAULT px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary/20 transition-all text-center"
+                                                type="text" placeholder="5432" />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1.5 ml-1">Banco
+                                            de Dados</label>
+                                        <input id="dbDatabase"
+                                            class="w-full bg-surface-container-low border-none rounded-DEFAULT px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary/20 transition-all"
+                                            type="text" placeholder="nome_do_banco" />
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label
+                                                class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1.5 ml-1">Usuário</label>
+                                            <input id="dbUser"
+                                                class="w-full bg-surface-container-low border-none rounded-DEFAULT px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary/20 transition-all"
+                                                type="text" placeholder="postgres" />
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1.5 ml-1">Senha</label>
+                                            <input id="dbPassword"
+                                                class="w-full bg-surface-container-low border-none rounded-DEFAULT px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary/20 transition-all"
+                                                type="password" placeholder="••••••••••••" />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1.5 ml-1">API
+                                            Key OpenRouter</label>
+                                        <input id="dbApiKey"
+                                            class="w-full bg-surface-container-low border-none rounded-DEFAULT px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary/20 transition-all"
+                                            type="password" placeholder="sk-or-v1-..." />
+                                    </div>
+                                    <div class="flex gap-6 items-center pt-2">
+                                        <label class="flex items-center gap-2 cursor-pointer group">
+                                            <input type="checkbox" id="dbSSL"
+                                                class="rounded border-outline-variant/30 text-primary focus:ring-primary/20 w-4 h-4 transition-all">
+                                            <span
+                                                class="text-sm font-semibold text-on-surface-variant group-hover:text-on-surface transition-colors">Usar
+                                                SSL</span>
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer group">
+                                            <input type="checkbox" id="dbSetActive" checked
+                                                class="rounded border-outline-variant/30 text-primary focus:ring-primary/20 w-4 h-4 transition-all">
+                                            <span
+                                                class="text-sm font-semibold text-on-surface-variant group-hover:text-on-surface transition-colors">Ativar
+                                                ao salvar</span>
+                                        </label>
+                                    </div>
+                                    <div class="pt-6 flex flex-wrap gap-3">
+                                        <button id="dbBtnTest"
+                                            class="flex-1 py-3 bg-secondary-container text-on-secondary-container rounded-full font-bold text-sm hover:opacity-90 transition-all flex items-center justify-center gap-2"
+                                            type="button">
+                                            <span class="material-symbols-outlined text-sm">rule</span>
+                                            Testar Conexão
+                                        </button>
+                                        <button id="dbBtnSave"
+                                            class="flex-1 py-3 bg-primary text-on-primary rounded-full font-bold text-sm hover:shadow-lg hover:shadow-primary/30 transition-all flex items-center justify-center gap-2"
+                                            type="button">
+                                            <span class="material-symbols-outlined text-sm">save</span>
+                                            Salvar Alterações
+                                        </button>
+                                    </div>
+                                    <div
+                                        class="pt-4 flex justify-between items-center border-t border-outline-variant/20">
+                                        <div class="flex gap-3">
+                                            <button id="dbBtnSetActive"
+                                                class="text-primary font-bold text-sm flex items-center gap-1 hover:underline"
+                                                type="button">
+                                                <span class="material-symbols-outlined text-sm">check_circle</span>
+                                                Ativar
+                                            </button>
+                                            <button id="dbBtnDelete"
+                                                class="text-error font-semibold text-sm flex items-center gap-1 hover:underline"
+                                                type="button">
+                                                <span class="material-symbols-outlined text-sm">delete</span>
+                                                Excluir
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </section>
+                        </div>
+
+                        <!-- Right Column: Catalog & Mapping -->
+                        <div class="lg:col-span-7 space-y-8">
+                            <!-- Catálogo de Tabelas (Bento Style) -->
+                            <section
+                                class="glass-panel p-8 rounded-DEFAULT shadow-sm border border-outline-variant/20 relative overflow-hidden bg-white/70">
+                                <div class="absolute -right-12 -top-12 w-48 h-48 bg-primary/5 rounded-full blur-3xl">
+                                </div>
+                                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                                    <div>
+                                        <h2 class="text-xl font-bold text-on-surface">Catálogo de Tabelas</h2>
+                                    </div>
+                                    <div class="relative min-w-[280px]">
+                                        <span
+                                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+                                        <input id="dbSchemaSearch"
+                                            class="w-full pl-10 pr-4 py-2.5 bg-surface-container border-none rounded-full text-sm focus:ring-2 focus:ring-primary/20"
+                                            placeholder="Buscar tabela..." type="text" />
+                                    </div>
+                                </div>
+                                <div class="mb-4 flex justify-between items-center">
+                                    <span id="dbSchemaCount"
+                                        class="text-[11px] font-bold text-primary px-3 py-1 bg-primary/10 rounded-full">0
+                                        tabelas</span>
+                                </div>
+                                <div id="dbSchemaCards" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="db-empty-state col-span-2 text-center py-20 text-on-surface-variant/60">
+                                        <span class="material-symbols-outlined text-4xl mb-2 block">database</span>
+                                        Selecione um perfil para carregar as tabelas.
+                                    </div>
+                                </div>
+                                <!-- Pagination Controls -->
+                                <div
+                                    class="mt-6 flex items-center justify-between border-t border-outline-variant/10 pt-4">
+                                    <button id="dbBtnSchemaPrev"
+                                        class="p-2 text-on-surface-variant hover:text-primary disabled:opacity-20 disabled:cursor-not-allowed transition-all flex items-center gap-1 group"
+                                        title="Anterior" type="button">
+                                        <span
+                                            class="material-symbols-outlined text-[20px] group-hover:-translate-x-0.5 transition-transform">chevron_left</span>
+                                        <span class="text-[10px] font-black uppercase tracking-widest">Anterior</span>
+                                    </button>
+                                    <div id="dbSchemaPaginationInfo"
+                                        class="text-[10px] font-black text-outline uppercase tracking-[0.2em] opacity-40">
+                                        Página 1 de 1
+                                    </div>
+                                    <button id="dbBtnSchemaNext"
+                                        class="p-2 text-on-surface-variant hover:text-primary disabled:opacity-20 disabled:cursor-not-allowed transition-all flex items-center gap-1 group"
+                                        title="Próximo" type="button">
+                                        <span class="text-[10px] font-black uppercase tracking-widest">Próximo</span>
+                                        <span
+                                            class="material-symbols-outlined text-[20px] group-hover:translate-x-0.5 transition-transform">chevron_right</span>
+                                    </button>
+                                </div>
+                            </section>
+
+                            <!-- Mapeamento por Relacionamento -->
+                            <section class="bg-surface-container-low p-8 rounded-DEFAULT">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div>
+                                        <h2 class="text-xl font-bold text-on-surface">Mapeamento por Relacionamento</h2>
+                                        <p id="dbMappingHint" class="text-sm text-on-surface-variant">Defina como os
+                                            dados se conectam ao modelo.</p>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button id="dbBtnLoadMapping"
+                                            class="p-2.5 bg-white/50 text-on-surface-variant rounded-full hover:text-primary transition-all border border-outline-variant/30"
+                                            title="Carregar Mapeamento">
+                                            <span class="material-symbols-outlined text-[20px]">download</span>
+                                        </button>
+                                        <button id="dbBtnSaveMapping"
+                                            class="px-5 py-2.5 bg-primary text-on-primary rounded-full text-sm font-semibold hover:shadow-lg hover:shadow-primary/20 transition-all flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-sm">save</span>
+                                            Salvar Mapeamento
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="mt-6 mb-4 flex justify-between items-center">
+                                    <div class="relative flex-1 max-w-sm">
+                                        <span
+                                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">search</span>
+                                        <input id="dbMappingSearch"
+                                            class="w-full pl-10 pr-4 py-2 bg-surface-container border-none rounded-full text-xs focus:ring-2 focus:ring-primary/20"
+                                            placeholder="Filtrar mapeamento..." type="text" />
+                                    </div>
+                                    <span id="dbMappingCount"
+                                        class="text-[11px] font-bold text-secondary px-3 py-1 bg-secondary/10 rounded-full">0
+                                        relacionamentos</span>
+                                </div>
+                                <div id="dbMappingCards" class="space-y-4">
+                                    <div class="db-empty-state text-center py-10 text-on-surface-variant/60 text-sm">
+                                        Nenhum mapeamento carregado.</div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Tab (NEW REFINED DESIGN) -->
+            <div id="tab-ai" class="tab-content absolute inset-0 bg-gradient-mesh overflow-hidden">
+                <div class="flex h-full overflow-hidden">
+                    <!-- Sidebar -->
+                    <aside class="w-[280px] sidebar-glass flex-shrink-0 flex flex-col h-full hidden md:flex pt-4 z-40">
+                        <div class="p-5">
+                            <button onclick="startNewChat()"
+                                class="w-full flex items-center justify-between px-6 py-3.5 text-sm font-semibold bg-primary text-white shadow-liquid rounded-full hover:brightness-105 transition-all group border border-white/20">
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[18px]"
+                                        style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                                    <span>Novo chat</span>
+                                </div>
+                                <span
+                                    class="material-symbols-outlined text-white/80 text-lg opacity-0 group-hover:opacity-100 transition-opacity">edit_square</span>
+                            </button>
+                        </div>
+                        <div id="aiChatHistoryList" class="flex-1 overflow-y-auto px-4 py-2 space-y-1 no-scrollbar">
+                            <div
+                                class="text-[10px] font-bold text-on-surface-variant/60 px-5 py-4 uppercase tracking-[0.2em]">
+                                Recentes</div>
+                            <!-- Dynamic content will be injected here -->
+                        </div>
+                        <div class="p-5 border-t border-white/20">
+                            <button
+                                class="w-full flex items-center gap-3 px-5 py-3.5 hover:bg-white/60 rounded-full transition-all border border-transparent hover:border-white/40 hover:shadow-sm">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
+                                    <span class="material-symbols-outlined text-primary">account_circle</span>
+                                </div>
+                                <span class="text-sm font-semibold">Meu Perfil</span>
+                            </button>
+                        </div>
+                    </aside>
+
+                    <!-- Main Content Area -->
+                    <main class="flex-1 flex flex-col relative overflow-hidden">
+                        <!-- AI Header & Mode Switcher -->
+                        <header
+                            class="flex items-center justify-between px-8 py-5 z-40 bg-white/40 border-b border-white/20 backdrop-blur-md">
+                            <div class="flex items-center gap-3">
+                                <div id="aiStatusBadge" class="status-badge status-ready font-bold tracking-tight">
+                                    Pronto</div>
+                            </div>
+                            <div
+                                class="ai-mode-toggle liquid-glass p-1.5 rounded-full flex gap-1 shadow-sm scale-90 md:scale-100">
+                                <button onclick="setAiMode('conversa')" id="mode-conversa"
+                                    class="mode-btn px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all bg-primary text-on-primary shadow-sm">Conversa</button>
+                                <button onclick="setAiMode('apresentacao')" id="mode-apresentacao"
+                                    class="mode-btn px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all text-on-surface-variant hover:bg-white/60">Apresentação</button>
+                            </div>
+                        </header>
+                        <!-- Chat Container -->
+                        <div id="aiChatView" class="flex-1 overflow-y-auto pt-10 pb-80 no-scrollbar relative z-30">
+                            <div id="chatHistory" class="max-w-3xl mx-auto px-6 w-full space-y-12">
+                                <!-- Welcome State -->
+                                <div id="aiWelcomeView"
+                                    class="flex flex-col items-center justify-center mt-12 mb-20 text-center">
+                                    <div
+                                        class="w-20 h-20 bg-gradient-to-br from-primary to-blue-400 rounded-3xl flex items-center justify-center mb-8 shadow-liquid rotate-3 border border-white/30">
+                                        <span class="material-symbols-outlined text-white text-5xl -rotate-3"
+                                            style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                                    </div>
+                                    <h1 class="text-4xl font-extrabold tracking-tight mb-4 text-on-surface">Como posso
+                                        ajudar hoje?</h1>
+                                    <p class="text-on-surface-variant/80 font-medium">Seu Analista Financeiro
+                                        Inteligente está pronto para insights.</p>
+                                </div>
+                                <!-- Messages will render here -->
+                            </div>
+                        </div>
+
+                        <!-- Presentation View (Gamma Style) -->
+                        <div id="presentationView"
+                            class="hidden flex-1 overflow-y-auto no-scrollbar relative z-30 bg-slate-900/[0.02]">
+                            <div id="slidesContainer" class="max-w-5xl mx-auto py-16 px-6 space-y-16">
+                                <!-- Slides will render here -->
+                            </div>
+                        </div>
+
+                        <!-- Floating Input Area -->
+                        <div id="aiInputDock"
+                            class="absolute bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-white via-white/80 to-transparent pt-16 pb-10 px-6">
+                            <div class="max-w-3xl mx-auto flex flex-col gap-5">
+                                <!-- Suggestion Pills -->
+                                <div class="flex gap-2.5 overflow-x-auto no-scrollbar justify-center px-4">
+                                    <button onclick="askAI('Resumo do Mês')"
+                                        class="whitespace-nowrap px-5 py-2.5 rounded-full liquid-glass text-[13px] font-semibold text-on-surface-variant hover:border-primary/40 hover:text-primary hover:bg-white/80 transition-all shadow-sm">Resumo
+                                        do Mês</button>
+                                    <button onclick="askAI('Insights')"
+                                        class="whitespace-nowrap px-5 py-2.5 rounded-full liquid-glass text-[13px] font-semibold text-on-surface-variant hover:border-primary/40 hover:text-primary hover:bg-white/80 transition-all shadow-sm">Insights</button>
+                                    <button onclick="askAI('Alertas')"
+                                        class="whitespace-nowrap px-5 py-2.5 rounded-full liquid-glass text-[13px] font-semibold text-on-surface-variant hover:border-primary/40 hover:text-primary hover:bg-white/80 transition-all shadow-sm">Alertas</button>
+                                </div>
+                                <!-- Input Field -->
+                                <div
+                                    class="relative flex items-end w-full liquid-glass rounded-[2.5rem] p-3.5 pl-6 shadow-liquid focus-within:ring-2 focus-within:ring-primary/20 transition-all border border-white/60">
+                                    <button
+                                        class="mb-1 p-2 text-on-surface-variant hover:text-primary hover:bg-white/60 rounded-full transition-colors">
+                                        <span class="material-symbols-outlined">attach_file</span>
+                                    </button>
+                                    <textarea id="aiInput"
+                                        class="flex-1 max-h-[160px] min-h-[48px] bg-transparent border-none focus:ring-0 text-[15px] py-3.5 px-4 resize-none no-scrollbar placeholder:text-on-surface-variant/40 font-medium"
+                                        placeholder="Pergunte sobre suas finanças..." rows="1"
+                                        onkeypress="handleEnter(event)"></textarea>
+                                    <button id="btnSend" onclick="sendUserMessage()"
+                                        class="mb-1 w-11 h-11 rounded-full bg-primary text-white flex items-center justify-center shadow-liquid hover:brightness-105 hover:scale-105 active:scale-95 transition-all border border-white/20">
+                                        <span
+                                            class="material-symbols-outlined text-[22px] font-bold">arrow_upward</span>
+                                    </button>
+                                </div>
+                                <div
+                                    class="text-[10px] text-center text-on-surface-variant/50 font-semibold tracking-wider">
+                                    O Analista IA pode cometer erros. Verifique informações importantes.
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+
+            <!-- Stock Intelligence Tab -->
+            <div id="tab-stock-intelligence" class="tab-content absolute inset-0 overflow-y-auto">
+                <div class="legacy-container p-6 stock-intelligence-shell">
+                    <section class="stock-filter-card">
+                        <div class="stock-filter-header">
+                            <div>
+                                <h1 class="stock-title">Estoque Inteligente</h1>
+                                <p class="stock-subtitle">Cruze estoque, custo e margem em uma única visão com filtros
+                                    por período, filial, fornecedor e grupo.</p>
+                            </div>
+                        </div>
+                        <div class="stock-filter-grid">
+                            <div class="input-group">
+                                <label for="stockDateStart">Data Inicial</label>
+                                <input type="date" id="stockDateStart"
+                                    class="p-2 rounded-lg border border-outline-variant bg-white/50">
+                            </div>
+                            <div class="input-group">
+                                <label for="stockDateEnd">Data Final</label>
+                                <input type="date" id="stockDateEnd"
+                                    class="p-2 rounded-lg border border-outline-variant bg-white/50">
+                            </div>
+                            <div class="input-group">
+                                <label for="stockBranch">Filial</label>
+                                <select id="stockBranch"
+                                    class="p-2 rounded-lg border border-outline-variant bg-white/50">
+                                    <option value="">Todas as filiais</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="stockSupplier">Fornecedor</label>
+                                <div class="stock-autocomplete">
+                                    <input type="text" id="stockSupplier" placeholder="Digite o fornecedor"
+                                        class="p-2 rounded-lg border border-outline-variant bg-white/50"
+                                        autocomplete="off">
+                                    <div id="stockSupplierOptions" class="stock-autocomplete-menu" hidden></div>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="stockGroup">Grupo</label>
+                                <div class="stock-autocomplete">
+                                    <input type="text" id="stockGroup" placeholder="Digite o grupo"
+                                        class="p-2 rounded-lg border border-outline-variant bg-white/50"
+                                        autocomplete="off">
+                                    <div id="stockGroupOptions" class="stock-autocomplete-menu" hidden></div>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="stockStatus">Status</label>
+                                <select id="stockStatus"
+                                    class="p-2 rounded-lg border border-outline-variant bg-white/50">
+                                    <option value="">Todos os status</option>
+                                </select>
+                            </div>
+                            <button id="btnStockRefresh" class="stock-primary-btn" type="button">
+                                <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+                                Atualizar análise
+                            </button>
+                        </div>
+                        <div id="stockMetaNotice" class="stock-meta-notice">Aguardando carregamento do módulo.</div>
+                    </section>
+
+                    <section class="stock-kpi-grid">
+                        <article class="stock-kpi-card">
+                            <span>Produtos analisados</span>
+                            <strong id="stockKpiProducts">0</strong>
+                        </article>
+                        <article class="stock-kpi-card">
+                            <span>Estoque atual</span>
+                            <strong id="stockKpiQuantity">0</strong>
+                        </article>
+                        <article class="stock-kpi-card">
+                            <span>Valor de custo</span>
+                            <strong id="stockKpiCost">R$ 0,00</strong>
+                        </article>
+                        <article class="stock-kpi-card">
+                            <span>Valor de venda</span>
+                            <strong id="stockKpiSale">R$ 0,00</strong>
+                        </article>
+                        <article class="stock-kpi-card">
+                            <span>Margem ponderada</span>
+                            <strong id="stockKpiMargin">0,00%</strong>
+                        </article>
+                        <article class="stock-kpi-card">
+                            <span>Produtos sem giro</span>
+                            <strong id="stockKpiOut">0</strong>
+                        </article>
+                        <article class="stock-kpi-card">
+                            <span>Maior giro</span>
+                            <strong id="stockKpiHigh">0</strong>
+                        </article>
+                        <article class="stock-kpi-card stock-kpi-card-muted">
+                            <span>Modo analítico</span>
+                            <strong id="stockKpiMode">Parcial</strong>
+                        </article>
+                    </section>
+
+                    <section class="stock-insight-grid">
+                        <article class="stock-insight-card">
+                            <div class="stock-insight-header">
+                                <h3>Maior valor em estoque</h3>
+                                <span>Top 5</span>
+                            </div>
+                            <div id="stockTopValue" class="stock-mini-list">
+                                <div class="stock-empty">Sem dados.</div>
+                            </div>
+                        </article>
+                        <article class="stock-insight-card">
+                            <div class="stock-insight-header">
+                                <h3>Maior margem potencial</h3>
+                                <span>Top 5</span>
+                            </div>
+                            <div id="stockTopMargin" class="stock-mini-list">
+                                <div class="stock-empty">Sem dados.</div>
+                            </div>
+                        </article>
+                        <article class="stock-insight-card">
+                            <div class="stock-insight-header">
+                                <h3>Fornecedor com maior venda</h3>
+                                <span>Top 5</span>
+                            </div>
+                            <div id="stockTopSupplier" class="stock-mini-list">
+                                <div class="stock-empty">Sem dados.</div>
+                            </div>
+                        </article>
+                        <article class="stock-insight-card">
+                            <div class="stock-insight-header">
+                                <h3>Grupo com maior venda</h3>
+                                <span>Top 5</span>
+                            </div>
+                            <div id="stockTopGroup" class="stock-mini-list">
+                                <div class="stock-empty">Sem dados.</div>
+                            </div>
+                        </article>
+                    </section>
+
+                    <section class="data-table-section p-6 mb-10">
+                        <div class="details-card-header">
+                            <div>
+                                <h3 class="font-bold mb-1">Análise consolidada por produto</h3>
+                                <p class="details-card-subtitle">Comprado, vendido e saldo do período usam movimentação
+                                    filtrada. Estoque atual usa a posição consolidada do estoque.</p>
+                            </div>
+                            <span id="stockTableCount" class="details-count-badge">0 produtos</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table id="stockTable" class="w-full text-left">
+                                <thead class="border-b border-outline-variant">
+                                    <tr>
+                                        <th class="py-3 px-2 stock-col-product">Produto</th>
+                                        <th class="py-3 px-2 stock-col-supplier">Fornecedor</th>
+                                        <th class="py-3 px-2 text-right">Comprado</th>
+                                        <th class="py-3 px-2 text-right">Vendido</th>
+                                        <th class="py-3 px-2 text-right">Saldo do período</th>
+                                        <th class="py-3 px-2 text-right">Estoque atual</th>
+                                        <th class="py-3 px-2 text-right">Custo Médio</th>
+                                        <th class="py-3 px-2 text-right">Venda Média</th>
+                                        <th class="py-3 px-2 text-right">Margem</th>
+                                        <th class="py-3 px-2 text-right">Giro</th>
+                                        <th class="py-3 px-2">Últ. alteração</th>
+                                        <th class="py-3 px-2">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="stock-pagination">
+                            <button id="stockPrevPage" class="stock-pagination-btn" type="button">
+                                <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+                                Anterior
+                            </button>
+                            <div id="stockPaginationInfo" class="stock-pagination-info">Página 1 de 1</div>
+                            <button id="stockNextPage" class="stock-pagination-btn" type="button">
+                                Próxima
+                                <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                            </button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Dashboard Tab (Default) -->
+            <div id="tab-dashboard" class="tab-content active absolute inset-0 overflow-y-auto">
+                <div class="legacy-container p-6">
+                    <header class="mb-10">
+                        <h1 class="text-2xl font-bold mb-6">Relatório de Despesas Operacionais x Faturamento</h1>
+                        <div class="filters flex flex-wrap gap-4 items-end">
+                            <div class="input-group">
+                                <label for="dataInicial"
+                                    class="block text-xs font-semibold text-on-surface-variant mb-1">Data
+                                    Inicial</label>
+                                <input type="date" id="dataInicial"
+                                    class="p-2 rounded-lg border border-outline-variant bg-white/50">
+                            </div>
+                            <div class="input-group">
+                                <label for="dataFinal"
+                                    class="block text-xs font-semibold text-on-surface-variant mb-1">Data Final</label>
+                                <input type="date" id="dataFinal"
+                                    class="p-2 rounded-lg border border-outline-variant bg-white/50">
+                            </div>
+                            <div class="input-group">
+                                <label for="filial"
+                                    class="block text-xs font-semibold text-on-surface-variant mb-1">Filial</label>
+                                <select id="filial" class="p-2 rounded-lg border border-outline-variant bg-white/50">
+                                    <option value="">Todas as Filiais</option>
+                                </select>
+                            </div>
+                            <button id="btnFiltrar"
+                                class="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-sm hover:brightness-105 transition-all">Filtrar</button>
+                            <button id="btnManualAccount" type="button" class="manual-account-btn">
+                                <span class="material-symbols-outlined text-[18px]">add_card</span>
+                                Plano de Contas Manual
+                            </button>
+                        </div>
+                    </header>
+
+                    <section class="kpi-cards grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                        <div class="card p-6">
+                            <h3 class="text-sm font-semibold text-on-surface-variant mb-2">Faturamento Total</h3>
+                            <p id="kpiFaturamento" class="text-2xl font-bold text-primary">R$ 0,00</p>
+                        </div>
+                        <div class="card p-6">
+                            <h3 class="text-sm font-semibold text-on-surface-variant mb-2">Despesas Operacionais</h3>
+                            <p id="kpiDespesas" class="text-2xl font-bold text-red-500">R$ 0,00</p>
+                            <small id="kpiDespesasBreakdown" class="manual-kpi-breakdown">ERP: R$ 0,00 | Manual: R$
+                                0,00</small>
+                        </div>
+                        <div class="card p-6">
+                            <h3 class="text-sm font-semibold text-on-surface-variant mb-2">% Despesa / Faturamento</h3>
+                            <p id="kpiPercentual" class="text-2xl font-bold">0,00%</p>
+                        </div>
+                    </section>
+
+                    <section class="charts-container grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+                        <div class="chart-wrapper p-6">
+                            <h3 class="font-bold mb-4">Evolução Mensal</h3>
+                            <canvas id="monthlyChart"></canvas>
+                        </div>
+                        <div class="chart-wrapper p-6">
+                            <h3 class="font-bold mb-4">Top 10 Despesas</h3>
+                            <canvas id="top10Chart"></canvas>
+                        </div>
+                    </section>
+
+                    <section class="data-table-section p-6 mb-10">
+                        <div class="details-card-header">
+                            <div>
+                                <h3 class="font-bold mb-1">Detalhamento por Conta</h3>
+                                <p class="details-card-subtitle">Filtre as contas exibidas sem alterar os dados do
+                                    dashboard.</p>
+                            </div>
+                            <span id="detailsTableCount" class="details-count-badge">0 contas</span>
+                        </div>
+                        <div class="details-filters">
+                            <div class="details-filter-field details-filter-search">
+                                <span class="material-symbols-outlined">search</span>
+                                <input id="detailsSearchInput" type="text" placeholder="Buscar conta...">
+                            </div>
+                            <div class="details-filter-field">
+                                <select id="detailsSourceFilter">
+                                    <option value="">Todas as origens</option>
+                                    <option value="erp">Somente ERP</option>
+                                    <option value="manual">Somente Manual</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table id="detailsTable" class="w-full text-left">
+                                <thead class="border-b border-outline-variant">
+                                    <tr>
+                                        <th class="py-3 px-2">Conta</th>
+                                        <th class="py-3 px-2">Origem</th>
+                                        <th class="py-3 px-2 text-right">Valor Despesa</th>
+                                        <th class="py-3 px-2 text-right">% s/ Desp. Total</th>
+                                        <th class="py-3 px-2 text-right">% s/ Faturamento</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-outline-variant/30">
+                                    <!-- Rows populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../node_modules/chart.js/dist/chart.umd.js"></script>
+    <script src="../node_modules/vanilla-tilt/dist/vanilla-tilt.min.js"></script>
+    <script src="dashboard.js"></script>
+    <script>
+        // AI Textarea Auto-resize Logic
+        const aiTextarea = document.getElementById("aiInput");
+        if (aiTextarea) {
+            aiTextarea.addEventListener("input", function () {
+                this.style.height = "auto";
+                this.style.height = (this.scrollHeight) + "px";
+            }, false);
+            // Initialize height
+            aiTextarea.style.height = "48px";
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,338 @@
+[
+    {
+        "id": 1,
+        "codigo": "AP",
+        "nome": "APARELHO",
+        "casasdecimais": 0
+    },
+    {
+        "id": 15,
+        "codigo": "GR",
+        "nome": "GRAMA",
+        "casasdecimais": 2
+    },
+    {
+        "id": 19,
+        "codigo": "LT",
+        "nome": "LITRO",
+        "casasdecimais": 3
+    },
+    {
+        "id": 20,
+        "codigo": "M2",
+        "nome": "METRO QUADRADO",
+        "casasdecimais": 2
+    },
+    {
+        "id": 21,
+        "codigo": "M3",
+        "nome": "METRO CUBICO",
+        "casasdecimais": 3
+    },
+    {
+        "id": 22,
+        "codigo": "MI",
+        "nome": "MILHEIRO",
+        "casasdecimais": 3
+    },
+    {
+        "id": 29,
+        "codigo": "TQ",
+        "nome": "TANQUE",
+        "casasdecimais": 0
+    },
+    {
+        "id": 5,
+        "codigo": "CN",
+        "nome": "CONE",
+        "casasdecimais": 0
+    },
+    {
+        "id": 31,
+        "codigo": "HR",
+        "nome": "HORA",
+        "casasdecimais": 2
+    },
+    {
+        "id": 2,
+        "codigo": "BL",
+        "nome": "BLOCO",
+        "casasdecimais": 2
+    },
+    {
+        "id": 28,
+        "codigo": "RL",
+        "nome": "ROLO",
+        "casasdecimais": 2
+    },
+    {
+        "id": 14,
+        "codigo": "GL",
+        "nome": "GALAO",
+        "casasdecimais": 2
+    },
+    {
+        "id": 4,
+        "codigo": "CJ",
+        "nome": "CONJUNTO",
+        "casasdecimais": 2
+    },
+    {
+        "id": 33,
+        "codigo": "K",
+        "nome": "K",
+        "casasdecimais": 2
+    },
+    {
+        "id": 35,
+        "codigo": "SC",
+        "nome": "SC",
+        "casasdecimais": 2
+    },
+    {
+        "id": 36,
+        "codigo": "3",
+        "nome": "3",
+        "casasdecimais": 2
+    },
+    {
+        "id": 37,
+        "codigo": "U",
+        "nome": "U",
+        "casasdecimais": 2
+    },
+    {
+        "id": 43,
+        "codigo": "UN3",
+        "nome": "UN3",
+        "casasdecimais": 2
+    },
+    {
+        "id": 48,
+        "codigo": "FDO",
+        "nome": "FDO",
+        "casasdecimais": 2
+    },
+    {
+        "id": 49,
+        "codigo": "M",
+        "nome": "M",
+        "casasdecimais": 2
+    },
+    {
+        "id": 51,
+        "codigo": "BD",
+        "nome": "BD",
+        "casasdecimais": 2
+    },
+    {
+        "id": 54,
+        "codigo": "TO",
+        "nome": "TO",
+        "casasdecimais": 2
+    },
+    {
+        "id": 55,
+        "codigo": "KIT",
+        "nome": "KIT",
+        "casasdecimais": 2
+    },
+    {
+        "id": 56,
+        "codigo": "BR",
+        "nome": "BR",
+        "casasdecimais": 2
+    },
+    {
+        "id": 57,
+        "codigo": "FL",
+        "nome": "FL",
+        "casasdecimais": 2
+    },
+    {
+        "id": 58,
+        "codigo": ",",
+        "nome": ",",
+        "casasdecimais": 2
+    },
+    {
+        "id": 60,
+        "codigo": ",U",
+        "nome": ",U",
+        "casasdecimais": 2
+    },
+    {
+        "id": 61,
+        "codigo": ".",
+        "nome": ".",
+        "casasdecimais": 2
+    },
+    {
+        "id": 62,
+        "codigo": "0",
+        "nome": "0",
+        "casasdecimais": 2
+    },
+    {
+        "id": 64,
+        "codigo": "11",
+        "nome": "SERV",
+        "casasdecimais": 0
+    },
+    {
+        "id": 30,
+        "codigo": "UN",
+        "nome": "UNIDADE",
+        "casasdecimais": 0
+    },
+    {
+        "id": 42,
+        "codigo": "UNI",
+        "nome": "UNI",
+        "casasdecimais": 0
+    },
+    {
+        "id": 18,
+        "codigo": "LA",
+        "nome": "LATA",
+        "casasdecimais": 0
+    },
+    {
+        "id": 50,
+        "codigo": "UND",
+        "nome": "UND",
+        "casasdecimais": 0
+    },
+    {
+        "id": 24,
+        "codigo": "PC",
+        "nome": "PECA",
+        "casasdecimais": 0
+    },
+    {
+        "id": 38,
+        "codigo": "UN,",
+        "nome": "UN,",
+        "casasdecimais": 0
+    },
+    {
+        "id": 12,
+        "codigo": "DZ",
+        "nome": "DUZIA",
+        "casasdecimais": 0
+    },
+    {
+        "id": 13,
+        "codigo": "FD",
+        "nome": "FARDO",
+        "casasdecimais": 0
+    },
+    {
+        "id": 16,
+        "codigo": "JG",
+        "nome": "JOGO",
+        "casasdecimais": 0
+    },
+    {
+        "id": 53,
+        "codigo": "PEC",
+        "nome": "PEC",
+        "casasdecimais": 0
+    },
+    {
+        "id": 45,
+        "codigo": "CT",
+        "nome": "CT",
+        "casasdecimais": 0
+    },
+    {
+        "id": 46,
+        "codigo": "CX2",
+        "nome": "CX2",
+        "casasdecimais": 0
+    },
+    {
+        "id": 44,
+        "codigo": "CX3",
+        "nome": "CX3",
+        "casasdecimais": 0
+    },
+    {
+        "id": 40,
+        "codigo": "CX6",
+        "nome": "CX6",
+        "casasdecimais": 0
+    },
+    {
+        "id": 7,
+        "codigo": "CX",
+        "nome": "CAIXA",
+        "casasdecimais": 0
+    },
+    {
+        "id": 39,
+        "codigo": "CX1",
+        "nome": "CX1",
+        "casasdecimais": 0
+    },
+    {
+        "id": 26,
+        "codigo": "PT",
+        "nome": "PACOTE",
+        "casasdecimais": 0
+    },
+    {
+        "id": 32,
+        "codigo": "1",
+        "nome": "1",
+        "casasdecimais": 0
+    },
+    {
+        "id": 59,
+        "codigo": "10",
+        "nome": "10",
+        "casasdecimais": 0
+    },
+    {
+        "id": 34,
+        "codigo": "DP",
+        "nome": "DP",
+        "casasdecimais": 0
+    },
+    {
+        "id": 41,
+        "codigo": "DP1",
+        "nome": "DP1",
+        "casasdecimais": 0
+    },
+    {
+        "id": 47,
+        "codigo": "DP6",
+        "nome": "DP6",
+        "casasdecimais": 0
+    },
+    {
+        "id": 25,
+        "codigo": "PR",
+        "nome": "PAR",
+        "casasdecimais": 0
+    },
+    {
+        "id": 23,
+        "codigo": "MT",
+        "nome": "METROS",
+        "casasdecimais": 3
+    },
+    {
+        "id": 52,
+        "codigo": "MTO",
+        "nome": "MTO",
+        "casasdecimais": 3
+    },
+    {
+        "id": 17,
+        "codigo": "KG",
+        "nome": "QUILO",
+        "casasdecimais": 3
+    }
+]

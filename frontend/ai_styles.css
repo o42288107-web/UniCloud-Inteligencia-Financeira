@@ -1,0 +1,206 @@
+/* --- AI Chat Module Styles --- */
+
+.ai-container {
+    height: calc(100vh - 80px);
+    /* Adjust based on header/tab height */
+    display: flex;
+    flex-direction: column;
+}
+
+.ai-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.ai-status {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.status-badge {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 5px 12px;
+    border-radius: 99px;
+    font-size: 0.85rem;
+    border: 1px solid var(--glass-border);
+    color: var(--secondary-text);
+}
+
+.ai-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.ai-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    color: var(--primary-text);
+    padding: 8px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.ai-btn:hover {
+    background: rgba(27, 150, 216, 0.2);
+    /* Azul Principal transparent */
+    border-color: #1B96D8;
+    transform: translateY(-2px);
+}
+
+.chat-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    /* Contains scroll */
+}
+
+.chat-history {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding-right: 10px;
+    margin-bottom: 20px;
+}
+
+/* Custom Scrollbar for Chat */
+.chat-history::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-history::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.chat-message {
+    max-width: 80%;
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.3s ease;
+}
+
+.chat-message.user-message {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.chat-message.ai-message {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.message-content {
+    padding: 12px 18px;
+    border-radius: 18px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.user-message .message-content {
+    background: #1B96D8;
+    /* Azul Principal */
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+}
+
+.ai-message .message-content {
+    background: rgba(255, 255, 255, 0.8);
+    color: #0f172a;
+    border-bottom-left-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Markdown Styles inside Chat */
+.message-content ul {
+    margin: 5px 0 5px 20px;
+    padding: 0;
+}
+
+.message-content li {
+    margin-bottom: 4px;
+}
+
+.message-content strong {
+    font-weight: 600;
+    color: inherit;
+}
+
+.chat-input-area {
+    display: flex;
+    gap: 10px;
+    padding-top: 20px;
+    border-top: 1px solid var(--glass-border);
+}
+
+.chat-input-area input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--glass-border);
+    padding: 12px 15px;
+    border-radius: 12px;
+    color: #0f172a;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.chat-input-area input:focus {
+    background: #ffffff;
+    border-color: #1B96D8;
+    box-shadow: 0 0 0 3px rgba(27, 150, 216, 0.1);
+}
+
+.chat-input-area button {
+    background: #1B96D8;
+    color: white;
+    border: none;
+    padding: 0 25px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.chat-input-area button:hover {
+    background: #166ca3;
+    transform: translateY(-2px);
+}
+
+
+/* Typing Animation */
+.message-body.typing::after {
+    content: '|';
+    display: inline-block;
+    margin-left: 2px;
+    color: #1B96D8;
+    animation: blink 0.8s infinite;
+    font-weight: bold;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

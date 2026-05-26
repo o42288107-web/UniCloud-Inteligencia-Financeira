@@ -1,0 +1,8 @@
+{
+    "inventory": true,
+    "pos": true,
+    "cfo": true,
+    "dre": true,
+    "card_reconciliation": false,
+    "explorer": true
+}

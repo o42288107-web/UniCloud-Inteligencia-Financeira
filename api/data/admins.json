@@ -1,0 +1,11 @@
+[
+    {
+        "id": "1",
+        "name": "UniCloud Admin",
+        "email": "admin@unicloud.com",
+        "password": "admin123",
+        "role": "super_admin",
+        "tenant_id": "SUPER_ADMIN",
+        "company_name": "UniCloud"
+    }
+]
