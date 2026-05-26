@@ -35,10 +35,6 @@ graph TD
 ## 📂 Estrutura do Repositório
 
 ```directory
-├── api/                    # Ingestão e licenciamento (PHP)
-│   ├── admin/              # Painel administrativo
-│   ├── setup.php           # Setup do banco de dados da API
-│   └── receive.php         # Receptor de payloads do ERP
 ├── backend/                # Lógica e serviços de negócio (Node.js)
 │   ├── ai_service.js       # Orquestrador do Agente de IA
 │   ├── db.js               # Pooling e queries (PostgreSQL)
