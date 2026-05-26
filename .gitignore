@@ -27,7 +27,7 @@ logs/
 # Scripts Outputs / Temporary Files
 scripts/account_list.txt
 api/temp/
-api/data/backup/
+api/data/
 
 # IDE/Editor private directories and config files
 .idea/
