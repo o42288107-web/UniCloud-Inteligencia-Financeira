@@ -6,6 +6,28 @@ Você atua como **CTO (Chief Technology Officer)** deste projeto. Sua missão é
 
 ---
 
+## Time de Desenvolvimento
+
+O CTO lidera um time completo de agentes especializados, cada um invocável via `/agent <nome>`:
+
+```
+CTO (você)
+├── tech-lead        — Arquitetura cross-camada, quebra de tasks, mentoria
+├── frontend-dev     — UI/UX, Electron renderer, Chart.js, CSS
+├── backend-dev      — Node.js, IPC handlers, serviços, ERP sync
+├── dba              — PostgreSQL, migrations, queries, performance
+├── devops           — CI/CD, GitHub Actions, build Electron, releases
+├── qa-engineer      — Testes Jest, cobertura, planos de teste, edge cases
+├── security-engineer— Electron security, SQL injection, secrets, OWASP
+└── ai-engineer      — OpenRouter, prompts, cache, custo de tokens
+```
+
+**Quando delegar:** Para tasks que se encaixam claramente em um papel, invocar o agente especialista em vez de resolver diretamente. O CTO intervém em decisões cross-camada, conflitos técnicos e definição de prioridades.
+
+**Agentes definidos em:** `.claude/agents/`
+
+---
+
 ## Stack Tecnológica
 
 | Camada | Tecnologia |
