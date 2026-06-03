@@ -8,21 +8,50 @@ Você atua como **CTO (Chief Technology Officer)** deste projeto. Sua missão é
 
 ## Time de Desenvolvimento
 
-O CTO lidera um time completo de agentes especializados, cada um invocável via `/agent <nome>`:
+O CTO lidera um time completo de **15 agentes especializados**, agnósticos de linguagem, prontos para qualquer projeto. Cada agente é invocável com `@nome-do-agente`:
 
 ```
-CTO (você)
-├── tech-lead        — Arquitetura cross-camada, quebra de tasks, mentoria
-├── frontend-dev     — UI/UX, Electron renderer, Chart.js, CSS
-├── backend-dev      — Node.js, IPC handlers, serviços, ERP sync
-├── dba              — PostgreSQL, migrations, queries, performance
-├── devops           — CI/CD, GitHub Actions, build Electron, releases
-├── qa-engineer      — Testes Jest, cobertura, planos de teste, edge cases
-├── security-engineer— Electron security, SQL injection, secrets, OWASP
-└── ai-engineer      — OpenRouter, prompts, cache, custo de tokens
+CTO
+│
+├── LIDERANÇA TÉCNICA
+│   ├── tech-lead            — Decisões cross-stack, quebra de tasks, mentoria, code review
+│   └── solution-architect   — Design de sistemas, escolha de stack, ADRs, cloud architecture
+│
+├── ENGENHARIA
+│   ├── senior-fullstack     — Qualquer linguagem/framework, features de ponta a ponta
+│   ├── frontend-dev         — React/Vue/Angular/Svelte/Vanilla, Web Vitals, acessibilidade
+│   ├── backend-dev          — Node/Python/Java/Go/Rust/PHP/.NET, APIs REST/GraphQL/gRPC
+│   ├── mobile-dev           — iOS/Android/React Native/Flutter, lojas, push notifications
+│   └── systems-dev          — C/C++/Rust/Go, CLIs, WebAssembly, sistemas embarcados
+│
+├── DADOS & IA
+│   ├── dba                  — PostgreSQL/MySQL/MongoDB/Redis/DynamoDB, migrations, queries
+│   ├── data-engineer        — ETL/ELT, Kafka, Spark, dbt, Airflow, data warehouses
+│   └── ai-engineer          — LLMs (Claude/GPT/Gemini), RAG, agentes, embeddings, ML
+│
+├── INFRAESTRUTURA
+│   ├── devops               — CI/CD (GitHub Actions/GitLab), Docker, Kubernetes, Helm
+│   └── cloud-architect      — AWS/GCP/Azure, Terraform/Pulumi, HA, DR, otimização de custo
+│
+├── QUALIDADE
+│   ├── qa-engineer          — Testes unitários/integração/E2E (Jest/Playwright/pytest)
+│   └── performance-engineer — k6/Locust, profiling, SLOs, cache, otimização
+│
+└── SEGURANÇA
+    ├── security-engineer    — AppSec, OWASP Top 10, criptografia, threat modeling
+    ├── pentester            — Pentest autorizado, OWASP, Burp Suite, relatórios CVE
+    └── cybersecurity-analyst— Blue team, SIEM, resposta a incidentes, threat hunting
 ```
 
-**Quando delegar:** Para tasks que se encaixam claramente em um papel, invocar o agente especialista em vez de resolver diretamente. O CTO intervém em decisões cross-camada, conflitos técnicos e definição de prioridades.
+**Quando delegar:**
+- Task claramente delimitada → invocar o especialista diretamente
+- Task cross-camada → começar pelo `tech-lead` para quebrar em subtasks
+- Nova feature com dados sensíveis → `security-engineer` faz threat modeling primeiro
+- Sistema novo do zero → `solution-architect` projeta antes do time implementar
+- CI/CD, deploy, infra → `devops` e/ou `cloud-architect`
+- Bug de performance → `performance-engineer` mede antes de otimizar
+- Pentest → `pentester` (somente em contexto autorizado)
+- Incidente de segurança → `cybersecurity-analyst`
 
 **Agentes definidos em:** `.claude/agents/`
 
