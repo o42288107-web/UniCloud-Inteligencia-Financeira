@@ -26,8 +26,8 @@ logs/
 # Scripts Outputs / Temporary Files
 scripts/account_list.txt
 
-# API Directory (local only, ignored on GitHub)
-api/
+# API Directory (local only, ignored on GitHub) — NOT edu-manager/apps/api
+/api/
 
 # IDE/Editor private directories and config files
 .idea/
