@@ -26,8 +26,26 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v4
+
+      - name: Cache Turborepo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
 
       - uses: pnpm/action-setup@v4
         with:
@@ -59,9 +77,11 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/edumanager_test
           JWT_SECRET: test-secret-key-for-ci
           REFRESH_TOKEN_SECRET: test-refresh-secret-for-ci
+          REDIS_URL: redis://localhost:6379
 
       - name: Build
         run: pnpm build
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/edumanager_test
           NEXT_PUBLIC_API_URL: http://localhost:3001
+          REDIS_URL: redis://localhost:6379
