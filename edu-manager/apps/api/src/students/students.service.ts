@@ -2,6 +2,7 @@ import {
   Injectable, NotFoundException, ConflictException, ForbiddenException,
 } from '@nestjs/common';
 import * as argon2 from 'argon2';
+import { Prisma, EnrollmentStatus } from '@edu-manager/database';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtPayload } from '@edu-manager/shared';
 import { CreateStudentDto } from './dto/create-student.dto';
@@ -29,7 +30,7 @@ export class StudentsService {
         ],
       }),
       ...(classId && {
-        enrollments: { some: { classId, status: 'ACTIVE' } },
+        enrollments: { some: { classId, status: EnrollmentStatus.ACTIVE } },
       }),
     };
 
@@ -42,7 +43,7 @@ export class StudentsService {
         include: {
           user: { select: { id: true, name: true, email: true, avatarUrl: true, isActive: true } },
           enrollments: {
-            where: { status: 'ACTIVE' },
+            where: { status: EnrollmentStatus.ACTIVE },
             take: 1,
             include: { class: { include: { gradeLevel: true } } },
           },
@@ -118,9 +119,9 @@ export class StudentsService {
           nationality: dto.nationality ?? 'Brasileira',
           birthCity: dto.birthCity,
           birthState: dto.birthState,
-          address: dto.address,
-          specialNeeds: dto.specialNeeds,
-          medicalInfo: dto.medicalInfo,
+          address: dto.address as Prisma.InputJsonValue,
+          specialNeeds: dto.specialNeeds as Prisma.InputJsonValue,
+          medicalInfo: dto.medicalInfo as Prisma.InputJsonValue,
           susCard: dto.susCard,
         },
       });
@@ -129,9 +130,9 @@ export class StudentsService {
       if (dto.classId) {
         const classData = await tx.class.findFirst({
           where: { id: dto.classId, schoolId },
-          include: { academicYear: { where: { isCurrent: true } } },
+          include: { academicYear: true },
         });
-        if (classData?.academicYear) {
+        if (classData?.academicYear?.isCurrent) {
           await tx.enrollment.create({
             data: {
               studentId: newStudent.id,
@@ -153,7 +154,6 @@ export class StudentsService {
               phone: g.phone,
               email: g.email?.toLowerCase(),
               cpf: g.cpf,
-              relationship: g.relationship,
             },
           });
           await tx.studentGuardian.create({
@@ -202,9 +202,9 @@ export class StudentsService {
           ...(dto.cpf !== undefined && { cpf: dto.cpf }),
           ...(dto.rg !== undefined && { rg: dto.rg }),
           ...(dto.bloodType !== undefined && { bloodType: dto.bloodType }),
-          ...(dto.address && { address: dto.address }),
-          ...(dto.specialNeeds && { specialNeeds: dto.specialNeeds }),
-          ...(dto.medicalInfo && { medicalInfo: dto.medicalInfo }),
+          ...(dto.address && { address: dto.address as Prisma.InputJsonValue }),
+          ...(dto.specialNeeds && { specialNeeds: dto.specialNeeds as Prisma.InputJsonValue }),
+          ...(dto.medicalInfo && { medicalInfo: dto.medicalInfo as Prisma.InputJsonValue }),
           ...(dto.susCard !== undefined && { susCard: dto.susCard }),
         },
       });
@@ -236,10 +236,10 @@ export class StudentsService {
       where: { studentId_academicYearId: { studentId, academicYearId: currentYear.id } },
     });
     if (existing) {
-      if (existing.status === 'ACTIVE') throw new ConflictException('Aluno já matriculado no ano letivo atual');
+      if (existing.status === EnrollmentStatus.ACTIVE) throw new ConflictException('Aluno já matriculado no ano letivo atual');
       return this.prisma.enrollment.update({
         where: { id: existing.id },
-        data: { classId, status: 'ACTIVE', transferredAt: null },
+        data: { classId, status: EnrollmentStatus.ACTIVE, transferredAt: null },
         include: { class: { include: { gradeLevel: true } } },
       });
     }
