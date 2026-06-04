@@ -99,6 +99,13 @@ enum TaskPriority {
   URGENT
 }
 
+enum Shift {
+  MORNING
+  AFTERNOON
+  EVENING
+  INTEGRAL
+}
+
 enum AssetStatus {
   ACTIVE
   MAINTENANCE
@@ -239,15 +246,16 @@ model User {
   updatedAt   DateTime  @updatedAt @map("updated_at")
   deletedAt   DateTime? @map("deleted_at")
 
-  school         School?         @relation(fields: [schoolId], references: [id])
-  dre            DRE?            @relation(fields: [dreId], references: [id])
-  sessions       Session[]
-  student        Student?
-  teacher        Teacher?
-  guardian       Guardian?
-  sentMessages   Message[]       @relation("SentMessages")
-  notifications  Notification[]
-  aiConversations AIConversation[]
+  school               School?         @relation(fields: [schoolId], references: [id])
+  dre                  DRE?            @relation(fields: [dreId], references: [id])
+  sessions             Session[]
+  student              Student?
+  teacher              Teacher?
+  guardian             Guardian?
+  sentMessages         Message[]       @relation("SentMessages")
+  notifications        Notification[]
+  aiConversations      AIConversation[]
+  reportedOccurrences  Occurrence[]    @relation("OccurrenceReporter")
 
   @@index([schoolId])
   @@index([email])
@@ -288,6 +296,8 @@ model GradeLevel {
   classes Class[]
 
   @@unique([schoolId, name])
+  @@index([schoolId])
+  @@index([schoolId, order])
   @@map("grade_levels")
 }
 
@@ -297,7 +307,7 @@ model Class {
   academicYearId String   @map("academic_year_id")
   gradeLevelId   String   @map("grade_level_id")
   name           String   // "1A", "2B"
-  shift          String   // "MORNING", "AFTERNOON", "EVENING"
+  shift          Shift
   maxStudents    Int      @default(35) @map("max_students")
   room           String?
   createdAt      DateTime @default(now()) @map("created_at")
@@ -335,20 +345,25 @@ model Subject {
   lessonPlans     LessonPlan[]
 
   @@unique([schoolId, name])
+  @@index([schoolId])
   @@map("subjects")
 }
 
 model ClassSchedule {
-  id        String @id @default(uuid())
-  classId   String @map("class_id")
-  subjectId String @map("subject_id")
-  dayOfWeek Int    @map("day_of_week") // 1=Mon..5=Fri
-  startTime String @map("start_time")  // "08:00"
-  endTime   String @map("end_time")
+  id        String   @id @default(uuid())
+  classId   String   @map("class_id")
+  subjectId String   @map("subject_id")
+  teacherId String?  @map("teacher_id")
+  dayOfWeek Int      @map("day_of_week") // 1=Mon..5=Fri
+  startTime DateTime @map("start_time") @db.Time
+  endTime   DateTime @map("end_time") @db.Time
 
-  class   Class   @relation(fields: [classId], references: [id])
-  subject Subject @relation(fields: [subjectId], references: [id])
+  class   Class    @relation(fields: [classId], references: [id])
+  subject Subject  @relation(fields: [subjectId], references: [id])
+  teacher Teacher? @relation(fields: [teacherId], references: [id])
 
+  @@index([classId])
+  @@index([dayOfWeek])
   @@map("class_schedules")
 }
 
@@ -379,6 +394,7 @@ model Student {
   deletedAt       DateTime? @map("deleted_at")
 
   user        User              @relation(fields: [userId], references: [id])
+  school      School            @relation(fields: [schoolId], references: [id])
   enrollments Enrollment[]
   guardians   StudentGuardian[]
   documents   StudentDocument[]
@@ -431,7 +447,6 @@ model Enrollment {
   studentId      String           @map("student_id")
   classId        String           @map("class_id")
   academicYearId String           @map("academic_year_id")
-  schoolId       String           @map("school_id")
   status         EnrollmentStatus @default(ACTIVE)
   enrolledAt     DateTime         @default(now()) @map("enrolled_at")
   transferredAt  DateTime?        @map("transferred_at")
@@ -469,25 +484,30 @@ model StudentDocument {
 // ─────────────────────────────────────────────────────────────
 
 model Teacher {
-  id              String   @id @default(uuid())
-  userId          String   @unique @map("user_id")
-  schoolId        String   @map("school_id")
-  registrationNo  String?  @map("registration_no")
-  birthDate       DateTime @map("birth_date")
+  id              String    @id @default(uuid())
+  userId          String    @unique @map("user_id")
+  schoolId        String    @map("school_id")
+  registrationNo  String?   @map("registration_no")
+  birthDate       DateTime  @map("birth_date")
   cpf             String?
   specialization  String?
   formation       Json?
-  weeklyHours     Int?     @map("weekly_hours")
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
+  weeklyHours     Int?      @map("weekly_hours")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
   deletedAt       DateTime? @map("deleted_at")
 
   user            User             @relation(fields: [userId], references: [id])
+  school          School           @relation(fields: [schoolId], references: [id])
   teacherSubjects TeacherSubject[]
   teacherClasses  TeacherClass[]
   classDiaries    ClassDiary[]
   lessonPlans     LessonPlan[]
-  occurrences     Occurrence[]     @relation("OccurrenceReporter")
+  schedules       ClassSchedule[]
+
+  @@index([schoolId])
+  @@index([schoolId, deletedAt])
+  @@map("teachers")
 }
 
 model TeacherSubject {
@@ -498,14 +518,16 @@ model TeacherSubject {
   subject Subject @relation(fields: [subjectId], references: [id])
 
   @@id([teacherId, subjectId])
+  @@index([teacherId])
+  @@index([subjectId])
   @@map("teacher_subjects")
 }
 
 model TeacherClass {
-  id        String @id @default(uuid())
-  teacherId String @map("teacher_id")
-  classId   String @map("class_id")
-  subjectId String @map("subject_id")
+  id         String  @id @default(uuid())
+  teacherId  String  @map("teacher_id")
+  classId    String  @map("class_id")
+  subjectId  String  @map("subject_id")
   isHomeroom Boolean @default(false) @map("is_homeroom") // professor titular
 
   teacher Teacher @relation(fields: [teacherId], references: [id])
@@ -513,6 +535,9 @@ model TeacherClass {
   subject Subject @relation(fields: [subjectId], references: [id])
 
   @@unique([teacherId, classId, subjectId])
+  @@index([teacherId])
+  @@index([classId])
+  @@index([subjectId])
   @@map("teacher_classes")
 }
 
@@ -629,27 +654,27 @@ model LessonPlan {
 // ─────────────────────────────────────────────────────────────
 
 model Occurrence {
-  id           String             @id @default(uuid())
-  schoolId     String             @map("school_id")
-  studentId    String             @map("student_id")
-  reportedBy   String             @map("reported_by")
-  type         OccurrenceType
-  severity     OccurrenceSeverity @default(MEDIUM)
-  title        String
-  description  String
-  date         DateTime
-  witnesses    String[]
-  actionTaken  String?            @map("action_taken")
-  parentNotified Boolean          @default(false) @map("parent_notified")
-  parentNotifiedAt DateTime?      @map("parent_notified_at")
-  createdAt    DateTime           @default(now()) @map("created_at")
-  updatedAt    DateTime           @updatedAt @map("updated_at")
+  id               String             @id @default(uuid())
+  schoolId         String             @map("school_id")
+  studentId        String             @map("student_id")
+  reportedBy       String             @map("reported_by")
+  type             OccurrenceType
+  severity         OccurrenceSeverity @default(MEDIUM)
+  title            String
+  description      String
+  date             DateTime
+  witnesses        String[]
+  actionTaken      String?            @map("action_taken")
+  parentNotified   Boolean            @default(false) @map("parent_notified")
+  parentNotifiedAt DateTime?          @map("parent_notified_at")
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @updatedAt @map("updated_at")
 
-  school   School    @relation(fields: [schoolId], references: [id])
-  student  Student   @relation(fields: [studentId], references: [id])
-  reporter Teacher   @relation("OccurrenceReporter", fields: [reportedBy], references: [id])
-  files    OccurrenceFile[]
-  notifications OccurrenceNotification[]
+  school         School                  @relation(fields: [schoolId], references: [id])
+  student        Student                 @relation(fields: [studentId], references: [id])
+  reportedByUser User                    @relation("OccurrenceReporter", fields: [reportedBy], references: [id])
+  files          OccurrenceFile[]
+  notifications  OccurrenceNotification[]
 
   @@index([schoolId, studentId])
   @@map("occurrences")
@@ -669,12 +694,12 @@ model OccurrenceFile {
 }
 
 model OccurrenceNotification {
-  id           String   @id @default(uuid())
-  occurrenceId String   @map("occurrence_id")
-  sentTo       String   @map("sent_to")
+  id           String              @id @default(uuid())
+  occurrenceId String              @map("occurrence_id")
+  sentTo       String              @map("sent_to")
   channel      NotificationChannel
-  sentAt       DateTime @default(now()) @map("sent_at")
-  readAt       DateTime? @map("read_at")
+  sentAt       DateTime            @default(now()) @map("sent_at")
+  readAt       DateTime?           @map("read_at")
 
   occurrence Occurrence @relation(fields: [occurrenceId], references: [id])
 
@@ -702,16 +727,16 @@ model Message {
 }
 
 model Announcement {
-  id         String    @id @default(uuid())
-  schoolId   String    @map("school_id")
-  authorId   String    @map("author_id")
-  title      String
-  content    String
-  classIds   String[]  @map("class_ids")  // vazio = toda a escola
+  id          String    @id @default(uuid())
+  schoolId    String    @map("school_id")
+  authorId    String    @map("author_id")
+  title       String
+  content     String
+  classIds    String[]  @map("class_ids")  // vazio = toda a escola
   attachments String[]
-  publishAt  DateTime  @default(now()) @map("publish_at")
-  expiresAt  DateTime? @map("expires_at")
-  createdAt  DateTime  @default(now()) @map("created_at")
+  publishAt   DateTime  @default(now()) @map("publish_at")
+  expiresAt   DateTime? @map("expires_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
 
   school School @relation(fields: [schoolId], references: [id])
 
@@ -719,15 +744,15 @@ model Announcement {
 }
 
 model Notification {
-  id        String              @id @default(uuid())
-  userId    String              @map("user_id")
-  type      NotificationType
-  channel   NotificationChannel
-  title     String
-  body      String
-  data      Json?
-  readAt    DateTime?           @map("read_at")
-  sentAt    DateTime            @default(now()) @map("sent_at")
+  id      String              @id @default(uuid())
+  userId  String              @map("user_id")
+  type    NotificationType
+  channel NotificationChannel
+  title   String
+  body    String
+  data    Json?
+  readAt  DateTime?           @map("read_at")
+  sentAt  DateTime            @default(now()) @map("sent_at")
 
   user User @relation(fields: [userId], references: [id])
 
@@ -740,19 +765,19 @@ model Notification {
 // ─────────────────────────────────────────────────────────────
 
 model Task {
-  id           String       @id @default(uuid())
-  schoolId     String       @map("school_id")
-  title        String
-  description  String?
-  status       TaskStatus   @default(TODO)
-  priority     TaskPriority @default(MEDIUM)
-  assigneeId   String?      @map("assignee_id")
-  createdBy    String       @map("created_by")
-  dueDate      DateTime?    @map("due_date")
-  checklists   Json?        @default("[]")
-  labels       String[]
-  createdAt    DateTime     @default(now()) @map("created_at")
-  updatedAt    DateTime     @updatedAt @map("updated_at")
+  id          String       @id @default(uuid())
+  schoolId    String       @map("school_id")
+  title       String
+  description String?
+  status      TaskStatus   @default(TODO)
+  priority    TaskPriority @default(MEDIUM)
+  assigneeId  String?      @map("assignee_id")
+  createdBy   String       @map("created_by")
+  dueDate     DateTime?    @map("due_date")
+  checklists  Json?        @default("[]")
+  labels      String[]
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
 
   school School @relation(fields: [schoolId], references: [id])
 
@@ -785,34 +810,34 @@ model InternalRequest {
 // ─────────────────────────────────────────────────────────────
 
 model FoodItem {
-  id            String   @id @default(uuid())
-  schoolId      String   @map("school_id")
-  name          String
-  unit          String   // "kg", "L", "un"
-  category      String
-  minimumStock  Decimal  @map("minimum_stock") @db.Decimal(10, 3)
-  currentStock  Decimal  @default(0) @map("current_stock") @db.Decimal(10, 3)
-  createdAt     DateTime @default(now()) @map("created_at")
+  id           String   @id @default(uuid())
+  schoolId     String   @map("school_id")
+  name         String
+  unit         String   // "kg", "L", "un"
+  category     String
+  minimumStock Decimal  @map("minimum_stock") @db.Decimal(10, 3)
+  currentStock Decimal  @default(0) @map("current_stock") @db.Decimal(10, 3)
+  createdAt    DateTime @default(now()) @map("created_at")
 
-  school     School          @relation(fields: [schoolId], references: [id])
-  inventory  FoodInventory[]
+  school        School          @relation(fields: [schoolId], references: [id])
+  inventory     FoodInventory[]
   mealPlanItems MealPlanItem[]
 
   @@map("food_items")
 }
 
 model FoodInventory {
-  id          String            @id @default(uuid())
-  schoolId    String            @map("school_id")
-  foodItemId  String            @map("food_item_id")
-  type        StockMovementType
-  quantity    Decimal           @db.Decimal(10, 3)
-  lotNumber   String?           @map("lot_number")
-  expiresAt   DateTime?         @map("expires_at")
-  supplier    String?
-  unitCost    Decimal?          @map("unit_cost") @db.Decimal(10, 2)
-  createdBy   String            @map("created_by")
-  createdAt   DateTime          @default(now()) @map("created_at")
+  id         String            @id @default(uuid())
+  schoolId   String            @map("school_id")
+  foodItemId String            @map("food_item_id")
+  type       StockMovementType
+  quantity   Decimal           @db.Decimal(10, 3)
+  lotNumber  String?           @map("lot_number")
+  expiresAt  DateTime?         @map("expires_at")
+  supplier   String?
+  unitCost   Decimal?          @map("unit_cost") @db.Decimal(10, 2)
+  createdBy  String            @map("created_by")
+  createdAt  DateTime          @default(now()) @map("created_at")
 
   foodItem FoodItem @relation(fields: [foodItemId], references: [id])
 
@@ -820,13 +845,13 @@ model FoodInventory {
 }
 
 model MealPlan {
-  id        String   @id @default(uuid())
-  schoolId  String   @map("school_id")
-  date      DateTime @db.Date
-  shift     String
+  id          String   @id @default(uuid())
+  schoolId    String   @map("school_id")
+  date        DateTime @db.Date
+  shift       String
   description String?
-  createdBy String   @map("created_by")
-  createdAt DateTime @default(now()) @map("created_at")
+  createdBy   String   @map("created_by")
+  createdAt   DateTime @default(now()) @map("created_at")
 
   school School         @relation(fields: [schoolId], references: [id])
   items  MealPlanItem[]
@@ -853,23 +878,23 @@ model MealPlanItem {
 // ─────────────────────────────────────────────────────────────
 
 model Asset {
-  id           String      @id @default(uuid())
-  schoolId     String      @map("school_id")
-  name         String
-  description  String?
-  category     String
-  serialNumber String?     @map("serial_number")
-  patrimonyNo  String      @map("patrimony_no")
-  qrCode       String?     @unique @map("qr_code")
-  status       AssetStatus @default(ACTIVE)
-  location     String?
-  purchasedAt  DateTime?   @map("purchased_at")
-  purchaseValue Decimal?   @map("purchase_value") @db.Decimal(12, 2)
-  supplier     String?
-  warranty     DateTime?
-  photoUrl     String?     @map("photo_url")
-  createdAt    DateTime    @default(now()) @map("created_at")
-  updatedAt    DateTime    @updatedAt @map("updated_at")
+  id            String      @id @default(uuid())
+  schoolId      String      @map("school_id")
+  name          String
+  description   String?
+  category      String
+  serialNumber  String?     @map("serial_number")
+  patrimonyNo   String      @map("patrimony_no")
+  qrCode        String?     @unique @map("qr_code")
+  status        AssetStatus @default(ACTIVE)
+  location      String?
+  purchasedAt   DateTime?   @map("purchased_at")
+  purchaseValue Decimal?    @map("purchase_value") @db.Decimal(12, 2)
+  supplier      String?
+  warranty      DateTime?
+  photoUrl      String?     @map("photo_url")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
 
   school School @relation(fields: [schoolId], references: [id])
 
@@ -887,8 +912,8 @@ model StockItem {
   minimumStock Int      @default(0) @map("minimum_stock")
   createdAt    DateTime @default(now()) @map("created_at")
 
-  school     School          @relation(fields: [schoolId], references: [id])
-  movements  StockMovement[]
+  school    School          @relation(fields: [schoolId], references: [id])
+  movements StockMovement[]
 
   @@map("stock_items")
 }
@@ -941,18 +966,40 @@ model AIMessage {
 }
 
 model DigitizedContent {
-  id           String   @id @default(uuid())
-  schoolId     String   @map("school_id")
-  uploadedBy   String   @map("uploaded_by")
-  originalFile String   @map("original_file")
-  extractedText String? @map("extracted_text")
-  subjectId    String?  @map("subject_id")
-  classId      String?  @map("class_id")
-  teacherId    String?  @map("teacher_id")
-  title        String?
-  tags         String[]
-  processedAt  DateTime? @map("processed_at")
-  createdAt    DateTime @default(now()) @map("created_at")
+  id            String    @id @default(uuid())
+  schoolId      String    @map("school_id")
+  uploadedBy    String    @map("uploaded_by")
+  originalFile  String    @map("original_file")
+  extractedText String?   @map("extracted_text")
+  subjectId     String?   @map("subject_id")
+  classId       String?   @map("class_id")
+  teacherId     String?   @map("teacher_id")
+  title         String?
+  tags          String[]
+  processedAt   DateTime? @map("processed_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
 
   @@map("digitized_contents")
+}
+
+// ─────────────────────────────────────────────────────────────
+// AUDIT
+// ─────────────────────────────────────────────────────────────
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  schoolId   String?  @map("school_id")
+  userId     String   @map("user_id")
+  userRole   String   @map("user_role")
+  action     String
+  resource   String
+  resourceId String?  @map("resource_id")
+  changes    Json?
+  ipAddress  String?  @map("ip_address")
+  userAgent  String?  @map("user_agent")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([schoolId, resource, createdAt])
+  @@index([userId, createdAt])
+  @@map("audit_logs")
 }
