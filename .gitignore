@@ -43,3 +43,9 @@ scripts/account_list.txt
 Thumbs.db
 ehthumbs.db
 desktop.ini
+
+# Next.js build cache
+edu-manager/apps/web/.next/
+
+# Claude worktrees (agent isolation dirs)
+.claude/worktrees/
