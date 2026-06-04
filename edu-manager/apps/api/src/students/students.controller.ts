@@ -30,21 +30,21 @@ export class StudentsController {
   @Get(':id')
   @Roles('SCHOOL_ADMIN', 'COORDINATOR', 'TEACHER')
   @ApiOperation({ summary: 'Detalhar aluno' })
-  findOne(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+  findOne(@Param('id') id: string, @CurrentUser() user: JwtPayload): Promise<any> {
     return this.students.findOne(id, user.schoolId!);
   }
 
   @Post()
   @Roles('SCHOOL_ADMIN', 'COORDINATOR')
   @ApiOperation({ summary: 'Cadastrar aluno' })
-  create(@Body() dto: CreateStudentDto, @CurrentUser() user: JwtPayload) {
+  create(@Body() dto: CreateStudentDto, @CurrentUser() user: JwtPayload): Promise<any> {
     return this.students.create(dto, user);
   }
 
   @Patch(':id')
   @Roles('SCHOOL_ADMIN', 'COORDINATOR')
   @ApiOperation({ summary: 'Atualizar aluno' })
-  update(@Param('id') id: string, @Body() dto: UpdateStudentDto, @CurrentUser() user: JwtPayload) {
+  update(@Param('id') id: string, @Body() dto: UpdateStudentDto, @CurrentUser() user: JwtPayload): Promise<any> {
     return this.students.update(id, dto, user);
   }
 
@@ -70,7 +70,7 @@ export class StudentsController {
   @Get(':id/grades')
   @Roles('SCHOOL_ADMIN', 'COORDINATOR', 'TEACHER')
   @ApiOperation({ summary: 'Notas do aluno' })
-  getGrades(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+  getGrades(@Param('id') id: string, @CurrentUser() user: JwtPayload): Promise<any> {
     return this.students.getGrades(id, user);
   }
 

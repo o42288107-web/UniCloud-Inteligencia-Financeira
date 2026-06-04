@@ -1,4 +1,5 @@
 {
+  "exclude": ["src/test", "jest.config.ts"],
   "compilerOptions": {
     "module": "commonjs",
     "declaration": true,
