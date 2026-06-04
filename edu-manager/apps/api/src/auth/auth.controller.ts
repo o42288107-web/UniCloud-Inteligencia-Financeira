@@ -1,5 +1,5 @@
 import {
-  Controller, Post, Body, Res, Req, HttpCode, HttpStatus, UseGuards,
+  Controller, Post, Get, Body, Res, Req, HttpCode, HttpStatus, UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { Request, Response } from 'express';
@@ -71,7 +71,7 @@ export class AuthController {
     return this.auth.registerSchool(dto);
   }
 
-  @Post('me')
+  @Get('me')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Dados do usuário autenticado' })

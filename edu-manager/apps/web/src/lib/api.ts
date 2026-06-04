@@ -6,6 +6,14 @@ export const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+// Access token stored in memory only — never in sessionStorage/localStorage.
+// On page reload the interceptor re-fetches a new one via the httpOnly refresh cookie.
+let inMemoryToken: string | null = null;
+
+export function setAccessToken(token: string): void { inMemoryToken = token; }
+export function getAccessToken(): string | null { return inMemoryToken; }
+export function clearAccessToken(): void { inMemoryToken = null; }
+
 let isRefreshing = false;
 let failedQueue: Array<{ resolve: (v: string) => void; reject: (e: unknown) => void }> = [];
 
@@ -15,7 +23,7 @@ function processQueue(error: unknown, token: string | null) {
 }
 
 api.interceptors.request.use((config) => {
-  const token = typeof window !== 'undefined' ? sessionStorage.getItem('accessToken') : null;
+  const token = getAccessToken();
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
@@ -41,13 +49,13 @@ api.interceptors.response.use(
       try {
         const { data } = await api.post<{ data: { accessToken: string } }>('/auth/refresh');
         const newToken = data.data.accessToken;
-        sessionStorage.setItem('accessToken', newToken);
+        setAccessToken(newToken);
         processQueue(null, newToken);
         original.headers!.Authorization = `Bearer ${newToken}`;
         return api(original);
       } catch (err) {
         processQueue(err, null);
-        sessionStorage.removeItem('accessToken');
+        clearAccessToken();
         window.location.href = '/login';
         return Promise.reject(err);
       } finally {

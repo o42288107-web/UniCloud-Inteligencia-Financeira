@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import {
   Injectable,
   UnauthorizedException,
@@ -61,7 +62,7 @@ export class AuthService {
 
   async refreshToken(token: string): Promise<{ accessToken: string }> {
     const session = await this.prisma.session.findUnique({
-      where: { refreshToken: token },
+      where: { refreshToken: this.hashToken(token) },
       include: { user: true },
     });
 
@@ -86,7 +87,7 @@ export class AuthService {
 
   async logout(refreshToken: string): Promise<void> {
     await this.prisma.session.updateMany({
-      where: { refreshToken },
+      where: { refreshToken: this.hashToken(refreshToken) },
       data: { isRevoked: true },
     });
   }
@@ -163,6 +164,10 @@ export class AuthService {
     });
   }
 
+  private hashToken(token: string): string {
+    return createHash('sha256').update(token).digest('hex');
+  }
+
   private async createRefreshToken(
     userId: string,
     userAgent?: string,
@@ -173,7 +178,7 @@ export class AuthService {
     expiresAt.setDate(expiresAt.getDate() + 7);
 
     await this.prisma.session.create({
-      data: { userId, refreshToken: token, userAgent, ipAddress, expiresAt },
+      data: { userId, refreshToken: this.hashToken(token), userAgent, ipAddress, expiresAt },
     });
 
     return token;
