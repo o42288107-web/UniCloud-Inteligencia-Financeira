@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsInt, Min, Max } from 'class-validator';
+import { IsOptional, IsString, IsInt, Min, Max, IsIn } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -30,7 +30,7 @@ export class StudentQueryDto {
 
   @ApiPropertyOptional({ example: 'name:asc' })
   @IsOptional()
-  @IsString()
+  @IsIn(['name:asc', 'name:desc', 'createdAt:asc', 'createdAt:desc', 'enrollmentNo:asc', 'enrollmentNo:desc'])
   sort?: string;
 
   @ApiPropertyOptional()
